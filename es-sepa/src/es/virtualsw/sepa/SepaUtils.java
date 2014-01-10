@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -23,6 +25,16 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  */
 public class SepaUtils {
+
+    static String NIF = "";
+    static String COD_COMERCIAL = "";
+    static String COD_PAIS = "ES";
+
+    static String ADD_TO_DC = "00";
+    static int RESTA_TO_TABLA_1 = 55;
+    static int VALUE_DIVISOR_MODELO = 97;
+    static int VALUE_MODELO = 98;
+
 	/**
 	 * Converts java.util.Date into XMLGregorianCalendar (required by the xml structure), using the ISO DateTime pattern to represent date and time.
 	 * 
@@ -152,6 +164,112 @@ public class SepaUtils {
 	public static String nibToIban(String nib){
 		return "PT50"+nib;
 	}
-	
+
+
+    //GENERADOR CODIGO INTERVINIENTE
+    public static String generaCodInterviniente(String nif, String codComercial, String codPais) {
+        String retorno = "";
+        boolean genera = true;
+
+        NIF = (nif == null ? "" : nif.toUpperCase());
+        COD_COMERCIAL = (codComercial == null ? "" : codComercial.toUpperCase());
+        COD_PAIS = (codPais == null ? "" : codPais.toUpperCase());
+
+        System.out.println("Parametros para Generacion:" + NIF + "|" + COD_COMERCIAL + "|" + COD_PAIS + "|");
+
+        try {
+            //COMPROBAMOS EL NIF DE LA PERSONA
+            if (NIF.equals("")) {
+                System.out.println("El NIF no esta definido");
+                genera = false;
+            }
+            //COMPROBAMOS EL CÓDIGO COMERCIAL
+            if (COD_COMERCIAL.length() != 3) {
+                System.out.println("El Código Comercial no esta definido");
+                genera = false;
+            }
+
+            //COMPROBAMOS EL CÓDIGO DEL PAÍS
+            if (COD_PAIS.length() != 2) {
+                System.out.println("El Código de País no esta bien definido");
+                genera = false;
+            }
+
+
+            if (genera) {
+                //Posicion 1 y 2 - Código de Pais
+                retorno += COD_PAIS;
+
+                //Posicion 3 y 4 Dígitos de Control
+                NIF = limpiar_NIF_CIF();
+
+                retorno += genDigitoControl();
+
+                //Posicion 5 a 7
+                retorno += COD_COMERCIAL;
+
+                //Posicion 8 a 35
+                retorno += NIF;
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al generar código de Interviniente: " + e);
+        }
+
+        return retorno;
+    }
+
+    private static String genDigitoControl() {
+        String numbers = "0123456789";
+        String cadena = NIF + COD_PAIS + ADD_TO_DC;
+        String retorno = cadena;
+        char caracter;
+
+        //CONVERTIMOS LAS LETRAS EN NÚMEROS
+        for (int x = 0; x < cadena.length(); x++) {
+            caracter = cadena.charAt(x);
+            if (numbers.indexOf(caracter) < 0) {
+                retorno = retorno.replaceAll(String.valueOf(caracter), convert_To_Tabla_1(caracter));
+            }
+        }
+
+        //YA TENEMOS LA CADENA CON SOLO NUMEROS
+        //LA TRASFORMAMOS A NUMEROS Y SACAMOS SU MOD 97
+        //Y RESTAMOS A 98 EL RESTO DE LA OPERACIÓN
+        int resto = (int) (Long.parseLong(retorno) % VALUE_DIVISOR_MODELO);
+
+        resto = VALUE_MODELO - resto;
+
+        if (resto < 10) {
+            retorno = "0" + resto;
+        } else {
+            retorno = String.valueOf(resto);
+        }
+
+        return retorno;
+    }
+
+    private static String convert_To_Tabla_1(char caracter) {
+
+        int ascii = (int) caracter - RESTA_TO_TABLA_1;
+
+        return String.valueOf(ascii);
+
+    }
+
+    private static String limpiar_NIF_CIF() {
+
+        Pattern patron = Pattern.compile("[^a-zA-Z0-9]");
+
+        Matcher encaja = patron.matcher(NIF);
+
+        String retorno = encaja.replaceAll("");
+
+        System.out.println("NIF:" + retorno);
+
+        return retorno;
+    }
 
 }
