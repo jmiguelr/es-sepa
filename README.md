@@ -1,15 +1,3 @@
-pt-sepa-iso20022
-================
+es-sepa
 
-## Create Credit Transfer
-
-CreditTransfer transfer = new CreditTransfer(idFile, companyName);
-
-CreditTransferPaymentGroup group = new CreditTransferPaymentGroup(idGroup, executionDate, companyName, companyIban, companyBic);
-
-group.addTransaction(idTrans, value, creditorName, creditorIban, creditorBic);
-
-transfer.addPaymentGroup(group);
-
-transfer.write(fileName);
-
+Implementacion de la normativa europea SEPA adaptada a España. O al menos a las necesidades de los proyectos con los que estamos trabajando en http://www.virtualsw.com
