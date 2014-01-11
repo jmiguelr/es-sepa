@@ -8,11 +8,11 @@ package es.virtualsw.sepa.data;
  */
 public interface SepaFichero {
     String getIdFichero() ;
-    String msgId() ;
-    String fechaDeCreacion() ;
-    boolean presentadorEsPersonaJuridica() ;
-    String presentadorNIF() ;
-    String presentadorSufijo() ;
-    String presentadorPais() ;
-    String presentadorNombre() ;
+    String getMsgId() ;
+    String getFechaDeCreacion() ;
+    boolean esPresentadorPersonaJuridica() ;
+    String getPresentadorNIF() ;
+    String getPresentadorSufijo() ;
+    String getPresentadorPais() ;
+    String getPresentadorNombre() ;
 }

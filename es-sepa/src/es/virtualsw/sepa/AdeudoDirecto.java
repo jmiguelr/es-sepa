@@ -53,7 +53,7 @@ public class AdeudoDirecto {
 
         // Create group header
         GroupHeader39 groupHeader = new GroupHeader39();
-        groupHeader.setMsgId(sepaFicheroCreator.getFichero().msgId());
+        // groupHeader.setMsgId(sepaFicheroCreator.getFichero().msgId());
 
     }
 

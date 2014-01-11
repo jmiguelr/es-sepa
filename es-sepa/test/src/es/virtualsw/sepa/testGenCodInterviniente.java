@@ -1,6 +1,7 @@
 package src.es.virtualsw.sepa;
 
 import es.virtualsw.sepa.SepaUtils;
+import es.virtualsw.sepa.exceptions.InvalidDataException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -12,7 +13,7 @@ public class testGenCodInterviniente extends TestCase {
 
     }
 
-    public void testGenerarCodInterviniente() {
+    public void testGenerarCodInterviniente() throws InvalidDataException {
 
         String nif = "A12345678";
         String codComercial = "000";
@@ -22,7 +23,7 @@ public class testGenCodInterviniente extends TestCase {
 
         codInterviniente = SepaUtils.generaCodInterviniente(nif, codComercial, codPais);
 
-        System.out.println("CÓDIGO INTERVINIENTE:" + codInterviniente);
+        System.out.println("CODIGO INTERVINIENTE:" + codInterviniente);
 
         if (codInterviniente.equals("")) {
             assertTrue(false);

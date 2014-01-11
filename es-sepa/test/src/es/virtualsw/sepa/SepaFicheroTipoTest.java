@@ -22,37 +22,37 @@ public class SepaFicheroTipoTest implements SepaFichero {
     }
 
     @Override
-    public String msgId() {
+    public String getMsgId() {
         return "XX";
     }
 
     @Override
-    public String fechaDeCreacion() {
+    public String getFechaDeCreacion() {
         return "XX";
     }
 
     @Override
-    public boolean presentadorEsPersonaJuridica() {
+    public boolean esPresentadorPersonaJuridica() {
         return false;
     }
 
     @Override
-    public String presentadorNIF() {
+    public String getPresentadorNIF() {
         return "XX";
     }
 
     @Override
-    public String presentadorSufijo() {
+    public String getPresentadorSufijo() {
         return "XX";
     }
 
     @Override
-    public String presentadorPais() {
+    public String getPresentadorPais() {
         return "XX";
     }
 
     @Override
-    public String presentadorNombre() {
+    public String getPresentadorNombre() {
         return "XX";
     }
 }

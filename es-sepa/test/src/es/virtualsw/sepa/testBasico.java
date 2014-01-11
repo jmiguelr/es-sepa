@@ -30,40 +30,4 @@ public class testBasico extends junit.framework.TestCase {
 
     }
 
-
-
-
-
-
-
-
-    //
-    // _______________________________________________________________________________________________________
-
-    private class SepaPagosTest {
-        private Vector<SepaPago> sepaPagos;
-        private SepaFichero sepaFichero;
-
-        public SepaPagosTest(SepaFichero _sepaFichero) {
-            sepaFichero = _sepaFichero;
-        }
-
-        public Vector<SepaPago> getSepaPagos() {
-            return sepaPagos;
-        }
-    }
-
-    //
-    // _______________________________________________________________________________________________________
-
-    private class SepaOperacionesTest {
-        private Vector<SepaOperacion> sepaPago;
-
-        public SepaOperacionesTest(SepaPago sepaPago) {
-        }
-
-        public Vector<SepaOperacion> getSepaPago() {
-            return sepaPago;
-        }
-    }
 }
