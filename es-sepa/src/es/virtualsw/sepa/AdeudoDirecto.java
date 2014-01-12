@@ -1,8 +1,7 @@
 package es.virtualsw.sepa;
 
-import es.virtualsw.sepa.data.SepaFicheroCreator;
-import es.virtualsw.sepa.data.SepaOperacionCreator;
-import es.virtualsw.sepa.data.SepaPagoCreator;
+import es.virtualsw.sepa.data.*;
+import es.virtualsw.sepa.exceptions.StopProcessingException;
 import iso.std.iso._20022.tech.xsd.pain_008_001_02.*;
 
 import javax.xml.bind.JAXBContext;
@@ -13,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Vector;
 
 /**
  * Based on original work from: https://github.com/joaoosorio/pt-sepa-iso20022
@@ -45,31 +45,79 @@ public class AdeudoDirecto {
 
 
 
-    public void generaDocumento() {
+    public void generaDocumento() throws StopProcessingException{
 
+        sepaFicheroCreator.process();
+        SepaFichero sepaFichero =  sepaFicheroCreator.getFichero() ;
 
 
         document = new Document();
-
         // Initialize message root
         document.setCstmrDrctDbtInitn(new CustomerDirectDebitInitiationV02());
 
         // Create group header
         GroupHeader39 groupHeader = new GroupHeader39();
-        groupHeader.setMsgId(sepaFicheroCreator.getFichero().getMsgId());
+        groupHeader.setMsgId(sepaFichero.getMsgId());
 
         // Set date
-        SepaUtils.ISODateTime(new Date());
+        groupHeader.setCreDtTm(SepaUtils.ISODateTime(new Date()));
+
         // Set number of transactions
         groupHeader.setNbOfTxs("0");
         // Set control Sum
-        groupHeader.setCtrlSum(BigDecimal.ZERO);
+        groupHeader.setCtrlSum(BigDecimal.ZERO);        // TODO: Esto hay que reemplazarlo al terminar el documento.
+
         PartyIdentification32 party = new PartyIdentification32();
-        party.setNm(sepaFicheroCreator.getFichero().getPresentadorNombre());
+        party.setNm(sepaFichero.getPresentadorNombre());
+
+
+        Party6Choice tipoDePresentador = new Party6Choice() ;
+
+        if( sepaFichero.esPresentadorPersonaJuridica()) {
+            OrganisationIdentification4 organisationIdentification =  new OrganisationIdentification4() ;
+            organisationIdentification.getOthr().add()
+            tipoDePresentador.setOrgId( organisationIdentification );
+        } else {
+            PersonIdentification5 personIdentification5 = new PersonIdentification5() ;
+            personIdentification5.getOthr().add()
+            tipoDePresentador.setPrvtId(personIdentification5);
+        }
+
+
+        party.setId( new Party6Choice());
         groupHeader.setInitgPty(party);
 
         // Add group header to document
         document.getCstmrDrctDbtInitn().setGrpHdr(groupHeader);
+
+
+        // Comienza el proceso de pagos
+        sepaPagoCreator.process( sepaFichero ) ;
+        Vector<SepaPago> sepaPagos = sepaPagoCreator.getSepaPagos() ;
+        for( SepaPago sepaPago : sepaPagos   ) {
+            addSepaPago( sepaFichero ,  sepaPago ) ;
+
+        }
+
+        // TODO: Actualizar el numero de transacciones, CheckSums...
+
+
+    }
+
+    private void addSepaPago(SepaFichero sepaFichero, SepaPago sepaPago) throws StopProcessingException {
+
+        sepaOperacionCreator.process( sepaPago ) ;
+        Vector<SepaOperacion> sepaOperaciones = sepaOperacionCreator.getSepaOperaciones() ;
+
+        for(SepaOperacion sepaOperacion: sepaOperaciones) {
+            addSepaOperacion( sepaFichero ,  sepaPago , sepaOperacion  ) ;
+        }
+
+
+    }
+
+    private void addSepaOperacion(SepaFichero sepaFichero, SepaPago sepaPago, SepaOperacion sepaOperacion) throws StopProcessingException{
+
 
     }
 
@@ -78,6 +126,10 @@ public class AdeudoDirecto {
         //TODO update control sum e numTransactions;
         document.getCstmrDrctDbtInitn().getPmtInf().add(paymentGroup.getInformation());
     }
+
+
+
+
 
     /**
      * @throws java.io.IOException
