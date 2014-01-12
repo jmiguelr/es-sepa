@@ -1,5 +1,7 @@
 package es.virtualsw.sepa.data;
 
+import es.virtualsw.sepa.exceptions.StopProcessingException;
+
 import java.util.Vector;
 
 /**
@@ -14,6 +16,6 @@ import java.util.Vector;
  *
  */
 public interface SepaPagoCreator {
-    public boolean process( SepaFichero sepaFichero ) ;
+    public void process( SepaFichero sepaFichero ) throws StopProcessingException;
     Vector<SepaPago> getSepaPagos() ;
 }

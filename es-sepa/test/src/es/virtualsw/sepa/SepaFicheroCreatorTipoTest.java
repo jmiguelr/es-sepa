@@ -23,7 +23,6 @@ public class SepaFicheroCreatorTipoTest implements SepaFicheroCreator {
 
         // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
 
-
         sepaFichero = new SepaFicheroTipoTest("MiId") ;
         return true ;
     }

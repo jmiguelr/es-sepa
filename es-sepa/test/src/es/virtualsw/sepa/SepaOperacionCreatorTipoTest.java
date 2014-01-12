@@ -17,8 +17,7 @@ public class SepaOperacionCreatorTipoTest implements SepaOperacionCreator {
 
     @Override
     public boolean process(SepaPago _sepaPago) {
-
-        // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
+    // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
 
         sepaOperaciones = new Vector<SepaOperacion>() ;
         sepaOperaciones.add( new SepaOperacionTipoTest() ) ;

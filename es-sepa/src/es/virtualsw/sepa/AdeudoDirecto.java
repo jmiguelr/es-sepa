@@ -46,6 +46,9 @@ public class AdeudoDirecto {
 
 
     public void generaDocumento() {
+
+
+
         document = new Document();
 
         // Initialize message root
@@ -53,42 +56,23 @@ public class AdeudoDirecto {
 
         // Create group header
         GroupHeader39 groupHeader = new GroupHeader39();
-        // groupHeader.setMsgId(sepaFicheroCreator.getFichero().msgId());
-
-    }
-
-
-    public AdeudoDirecto(String msgId, String companyName) {
-        // Initialize document
-        document = new Document();
-
-        // Initialize message root
-        document.setCstmrDrctDbtInitn(new CustomerDirectDebitInitiationV02());
-
-        // Create group header
-        GroupHeader39 groupHeader = new GroupHeader39();
-
-        // Set message id
-        groupHeader.setMsgId(msgId);
+        groupHeader.setMsgId(sepaFicheroCreator.getFichero().getMsgId());
 
         // Set date
         SepaUtils.ISODateTime(new Date());
-
         // Set number of transactions
         groupHeader.setNbOfTxs("0");
-
         // Set control Sum
         groupHeader.setCtrlSum(BigDecimal.ZERO);
-
-        // Set party identification - based on name only
-        // TODO Add id based party identification
         PartyIdentification32 party = new PartyIdentification32();
-        party.setNm(companyName);
+        party.setNm(sepaFicheroCreator.getFichero().getPresentadorNombre());
         groupHeader.setInitgPty(party);
 
         // Add group header to document
         document.getCstmrDrctDbtInitn().setGrpHdr(groupHeader);
+
     }
+
 
     public void addPaymentGroup(DirectDebitPaymentGroup paymentGroup) {
         //TODO update control sum e numTransactions;

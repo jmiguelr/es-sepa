@@ -18,9 +18,7 @@ public class SepaPagoCreatorTipoTest implements SepaPagoCreator {
 
     @Override
     public boolean process(SepaFichero sepaFichero) {
-
         // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
-
         sepaPagos = new Vector<SepaPago>() ;
         sepaPagos.add( new SepaPagosTipoTest() ) ;
 
@@ -29,6 +27,6 @@ public class SepaPagoCreatorTipoTest implements SepaPagoCreator {
 
     @Override
     public Vector<SepaPago> getSepaPagos() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return sepaPagos ;
     }
 }

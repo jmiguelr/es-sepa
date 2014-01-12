@@ -1,5 +1,7 @@
 package es.virtualsw.sepa.data;
 
+import es.virtualsw.sepa.exceptions.StopProcessingException;
+
 import java.util.Vector;
 
 /**
@@ -9,6 +11,7 @@ import java.util.Vector;
  * Time: 22:12
  */
 public interface SepaOperacionCreator {
-    public boolean process( SepaPago sepaPago ) ;
+
+    public void process( SepaPago sepaPago ) throws StopProcessingException;
     Vector<SepaOperacion> getSepaOperaciones() ;
 }

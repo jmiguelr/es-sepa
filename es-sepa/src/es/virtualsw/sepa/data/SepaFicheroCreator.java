@@ -1,5 +1,7 @@
 package es.virtualsw.sepa.data;
 
+import es.virtualsw.sepa.exceptions.StopProcessingException;
+
 /**
  * Created by
  * User: jmiguel
@@ -7,6 +9,6 @@ package es.virtualsw.sepa.data;
  * Time: 22:12
  */
 public interface SepaFicheroCreator {
-    public boolean process() ;
+    public void process() throws StopProcessingException;
     public SepaFichero getFichero() ;
 }
