@@ -188,7 +188,8 @@ public class SepaUtils {
         codigoDeInterviniente += codigoDePais;
 
         //Posicion 3 y 4 Digitos de Control
-        codigoDeInterviniente += genDigitoControl(limpiarNIFCIF(nif), codigoDePais);
+        nif = limpiarNIFCIF(nif);
+        codigoDeInterviniente += genDigitoControl(nif, codigoDePais);
 
         //Posicion 5 a 7
         codigoDeInterviniente += codComercial;

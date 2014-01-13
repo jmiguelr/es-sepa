@@ -2,6 +2,7 @@ package src.es.virtualsw.sepa;
 
 import es.virtualsw.sepa.data.SepaFichero;
 import es.virtualsw.sepa.data.SepaFicheroCreator;
+import es.virtualsw.sepa.exceptions.StopProcessingException;
 
 /**
  * Created by
@@ -19,12 +20,12 @@ public class SepaFicheroCreatorTipoTest implements SepaFicheroCreator {
 
 
     @Override
-    public boolean process() {
+    public void process() throws StopProcessingException {
 
         // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
 
         sepaFichero = new SepaFicheroTipoTest("MiId") ;
-        return true ;
+
     }
 
     @Override

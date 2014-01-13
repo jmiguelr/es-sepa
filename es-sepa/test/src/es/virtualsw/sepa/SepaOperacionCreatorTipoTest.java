@@ -3,6 +3,7 @@ package src.es.virtualsw.sepa;
 import es.virtualsw.sepa.data.SepaOperacion;
 import es.virtualsw.sepa.data.SepaOperacionCreator;
 import es.virtualsw.sepa.data.SepaPago;
+import es.virtualsw.sepa.exceptions.StopProcessingException;
 
 import java.util.Vector;
 
@@ -16,13 +17,13 @@ public class SepaOperacionCreatorTipoTest implements SepaOperacionCreator {
     Vector<SepaOperacion> sepaOperaciones ;
 
     @Override
-    public boolean process(SepaPago _sepaPago) {
+    public void process(SepaPago _sepaPago) throws StopProcessingException {
     // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
 
         sepaOperaciones = new Vector<SepaOperacion>() ;
         sepaOperaciones.add( new SepaOperacionTipoTest() ) ;
 
-        return true;
+
     }
 
     @Override
