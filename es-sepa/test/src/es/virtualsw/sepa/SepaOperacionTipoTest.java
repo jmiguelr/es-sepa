@@ -26,6 +26,11 @@ public class SepaOperacionTipoTest implements SepaOperacion {
     }
 
     @Override
+    public String getIdOperacionExtremo() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public Integer getImporte() {
         return null;
     }

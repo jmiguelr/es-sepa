@@ -11,6 +11,7 @@ public interface SepaOperacion {
     String getIdFichero() ;
     String getIdPago() ;
     String getIdOperacion() ;
+    String getIdOperacionExtremo() ;
     Integer getImporte() ;
     String getIdMandato() ;
     String getIdModificacionDeMandato() ;
