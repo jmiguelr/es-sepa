@@ -3,6 +3,8 @@ package src.es.virtualsw.sepa;
 import es.virtualsw.sepa.data.SepaOperacion;
 import es.virtualsw.sepa.data.SepaPago;
 
+import java.math.BigDecimal;
+
 /**
  * Created by
  * User: jmiguel
@@ -12,97 +14,97 @@ import es.virtualsw.sepa.data.SepaPago;
 public class SepaOperacionTipoTest implements SepaOperacion {
     @Override
     public String getIdFichero() {
-        return null;
+        return "idFichero";
     }
 
     @Override
     public String getIdPago() {
-        return null;
+        return "idPago";
     }
 
     @Override
     public String getIdOperacion() {
-        return null;
+        return "idOperacion";
     }
 
     @Override
     public String getIdOperacionExtremo() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "idOperacionExtremo";
     }
 
     @Override
-    public Integer getImporte() {
-        return null;
+    public BigDecimal getImporte() {
+        return new BigDecimal("1000.22");
     }
 
     @Override
     public String getIdMandato() {
-        return null;
+        return "idMandato";
     }
 
     @Override
     public String getFechaDeMandato() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "12/12/2015";
     }
 
     @Override
     public String getIdModificacionDeMandato() {
-        return null;
+        return "idModificacionMandat";
     }
 
     @Override
     public String getNombreAnteriorDeAcreedor() {
-        return null;
+        return "Anterior Acreedor";
     }
 
     @Override
     public String getIdAnteriorDeAcreedor() {
-        return null;
+        return "idAnteriorAcreedor";
     }
 
     @Override
     public String getIBANAnteriorDeAcreedor() {
-        return null;
+        return "IbanAnterior";
     }
 
     @Override
     public String getBICDeudor() {
-        return null;
+        return "BicDeudor";
     }
 
     @Override
     public String getNombreDeudor() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "Nombre Deudor";
     }
 
     @Override
     public boolean esDeudorPersonaJuridica() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 
     @Override
     public String getNIFDeudor() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "123456789A";
     }
 
     @Override
     public String getSufijoDeudor() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "SUFDeudor";
     }
 
     @Override
     public String getCodigoPaisDeudor() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "ES";
     }
 
     @Override
     public String getIBANCuentaDeudor() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "iBandDeudor";
     }
 
     @Override
     public String getConceptoDeOperacion() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "El Conceto";
     }
 
 }
