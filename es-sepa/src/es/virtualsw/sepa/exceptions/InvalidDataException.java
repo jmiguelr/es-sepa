@@ -23,7 +23,5 @@ public class InvalidDataException extends Exception {
         super(cause);
     }
 
-    protected InvalidDataException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+
 }

@@ -75,11 +75,11 @@ public class AdeudoDirecto {
 
         if( sepaFichero.esPresentadorPersonaJuridica()) {
             OrganisationIdentification4 organisationIdentification =  new OrganisationIdentification4() ;
-            organisationIdentification.getOthr().add()
+            // organisationIdentification.getOthr().add()
             tipoDePresentador.setOrgId( organisationIdentification );
         } else {
             PersonIdentification5 personIdentification5 = new PersonIdentification5() ;
-            personIdentification5.getOthr().add()
+            // personIdentification5.getOthr().add()
             tipoDePresentador.setPrvtId(personIdentification5);
         }
 
