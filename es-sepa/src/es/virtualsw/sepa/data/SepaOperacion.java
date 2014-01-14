@@ -14,6 +14,7 @@ public interface SepaOperacion {
     String getIdOperacionExtremo() ;
     Integer getImporte() ;
     String getIdMandato() ;
+    String getFechaDeMandato() ;
     String getIdModificacionDeMandato() ;
     String getNombreAnteriorDeAcreedor() ;
     String getIdAnteriorDeAcreedor() ;
