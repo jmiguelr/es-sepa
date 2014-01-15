@@ -40,12 +40,12 @@ public class SepaFicheroTipoTest implements SepaFichero {
 
     @Override
     public String getPresentadorNIF() {
-        return "_presentadorNif_";
+        return "12345678N";
     }
 
     @Override
     public String getPresentadorSufijo() {
-        return "_presentadorSufijo_";
+        return "ABC";
     }
 
     @Override

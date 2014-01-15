@@ -44,12 +44,12 @@ public class SepaPagosTipoTest implements SepaPago {
 
     @Override
     public String getAcreedorNIF() {
-        return "AcreedorNif";
+        return "12345678N";
     }
 
     @Override
     public String getAcreedorSufijo() {
-        return "SUF";
+        return "GHI";
     }
 
     @Override
@@ -59,17 +59,17 @@ public class SepaPagosTipoTest implements SepaPago {
 
     @Override
     public String getAcreedorPais() {
-        return "UK";
+        return "Acreedor Pais";
     }
 
     @Override
     public String getAcreedorDireccion() {
-        return "London Town";
+        return "Acreedor Direccion";
     }
 
     @Override
     public String getAcreedorIBAN() {
-        return "Acreedor Iban";
+        return "AcreedorIBAN";
     }
 
     @Override

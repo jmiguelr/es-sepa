@@ -21,7 +21,7 @@ public class testGenCodInterviniente extends TestCase {
 
         String codInterviniente = "";
 
-        codInterviniente = SepaUtils.generaCodInterviniente(nif, codComercial, codPais);
+        codInterviniente = SepaUtils.identificadorUnicoDeInterviniente(nif, codComercial, codPais);
 
         System.out.println("CODIGO INTERVINIENTE:" + codInterviniente);
 

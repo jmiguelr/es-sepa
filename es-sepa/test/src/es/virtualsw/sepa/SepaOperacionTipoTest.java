@@ -35,7 +35,7 @@ public class SepaOperacionTipoTest implements SepaOperacion {
 
     @Override
     public BigDecimal getImporte() {
-        return new BigDecimal("1000.22");
+        return new BigDecimal("1000.11");
     }
 
     @Override
@@ -50,12 +50,12 @@ public class SepaOperacionTipoTest implements SepaOperacion {
 
     @Override
     public String getIdModificacionDeMandato() {
-        return "idModificacionMandat";
+        return "idModificacionMandato";
     }
 
     @Override
     public String getNombreAnteriorDeAcreedor() {
-        return "Anterior Acreedor";
+        return "Nombra Anterior Acreedor";
     }
 
     @Override
@@ -64,8 +64,8 @@ public class SepaOperacionTipoTest implements SepaOperacion {
     }
 
     @Override
-    public String getIBANAnteriorDeAcreedor() {
-        return "IbanAnterior";
+    public String getIBANAnteriorDeDeudor() {
+        return "IbanAnteriorAcreedor";
     }
 
     @Override
@@ -85,12 +85,12 @@ public class SepaOperacionTipoTest implements SepaOperacion {
 
     @Override
     public String getNIFDeudor() {
-        return "123456789A";
+        return "12345678N";
     }
 
     @Override
     public String getSufijoDeudor() {
-        return "SUFDeudor";
+        return "DEF";
     }
 
     @Override
@@ -100,12 +100,12 @@ public class SepaOperacionTipoTest implements SepaOperacion {
 
     @Override
     public String getIBANCuentaDeudor() {
-        return "iBandDeudor";
+        return "iBanCuentaDeudor";
     }
 
     @Override
     public String getConceptoDeOperacion() {
-        return "El Conceto";
+        return "Concepto de Operacion";
     }
 
 }

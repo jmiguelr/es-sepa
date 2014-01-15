@@ -158,8 +158,7 @@ public class SepaUtils {
     }
 
 
-    // GENERADOR CODIGO INTERVINIENTE
-    public static String generaCodInterviniente(String nif, String codComercial, String codigoDePais) throws InvalidDataException {
+    public static String identificadorUnicoDeInterviniente(String nif, String codComercial, String codigoDePais) throws InvalidDataException {
         String codigoDeInterviniente = "";
 
         if( nif == null || codComercial == null || codigoDePais == null ) {
@@ -177,7 +176,7 @@ public class SepaUtils {
             throw new InvalidDataException("El NIF no esta definido");
         }
         if (codComercial.length() != 3) {
-            throw new InvalidDataException("El Codigo Comercial no esta definido");
+            throw new InvalidDataException("El Codigo Comercial no esta definido o tiene longitud incorrecta");
         }
         if (codigoDePais.length() != 2) {
             throw new InvalidDataException("Codigo de pais incorrecto");
@@ -189,7 +188,7 @@ public class SepaUtils {
 
         //Posicion 3 y 4 Digitos de Control
         nif = limpiarNIFCIF(nif);
-        codigoDeInterviniente += genDigitoControl(nif, codigoDePais);
+        codigoDeInterviniente += generaDigitoControl(nif, codigoDePais);
 
         //Posicion 5 a 7
         codigoDeInterviniente += codComercial;
@@ -200,7 +199,7 @@ public class SepaUtils {
         return codigoDeInterviniente;
     }
 
-    private static String genDigitoControl(String nif, String codigoDePais) {
+    private static String generaDigitoControl(String nif, String codigoDePais) {
         String numbers = "0123456789";
         String cadena = nif + codigoDePais + ADD_TO_DC;
         String retorno = cadena;

@@ -1,6 +1,7 @@
 package es.virtualsw.sepa;
 
 import es.virtualsw.sepa.data.*;
+import es.virtualsw.sepa.exceptions.InvalidDataException;
 import es.virtualsw.sepa.exceptions.StopProcessingException;
 import iso.std.iso._20022.tech.xsd.pain_008_001_02.*;
 
@@ -138,7 +139,15 @@ public class AdeudoDirecto {
         personIdentificationSchemeName1Choice.setPrtry("SEPA");
         GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
         genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
-        genericPersonIdentification1.setId(sepaPago.getAcreedorNIF());     // Todo: ??
+
+
+        try {
+            genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago.getAcreedorNIF(), sepaPago.getAcreedorSufijo(), "ES"));
+        } catch (InvalidDataException e) {
+            throw new StopProcessingException(e);
+        }
+
+
         personIdentification5.getOthr().add(genericPersonIdentification1);
 
         party6Choice.setPrvtId(personIdentification5);
@@ -159,7 +168,7 @@ public class AdeudoDirecto {
 
         DirectDebitTransactionInformation9 transaction = new DirectDebitTransactionInformation9();
         PaymentIdentification1 paymentIdentification = new PaymentIdentification1();
-        paymentIdentification.setInstrId("---- WTF??? ----");  // TODO
+        paymentIdentification.setInstrId(sepaOperacion.getIdOperacion());
         paymentIdentification.setEndToEndId(sepaOperacion.getIdOperacionExtremo());
         transaction.setPmtId(paymentIdentification);
         PaymentInstructionInformation4 paymentInstructionInformation = new PaymentInstructionInformation4();
@@ -173,9 +182,16 @@ public class AdeudoDirecto {
         MandateRelatedInformation6 mandateRelatedInformation = new MandateRelatedInformation6();
         mandateRelatedInformation.setMndtId(sepaOperacion.getIdMandato());
         mandateRelatedInformation.setDtOfSgntr(SepaUtils.ISODate(sepaOperacion.getFechaDeMandato()));
+
+
+        // Datos: Anterior y Modif
+
+
         // mandateRelatedInformation.setAmdmntInd( );  // Todo: AmdmntInd ¿Como se si hay que incluir esta etiqueta?
 
         // TODO: Igual que antes,¿como se si hay que incluir?  ¿Asi que tal?
+
+        // ---------
         /*
         if( !sepaOperacion.getIdModificacionDeMandato().equals("") ) {
             AmendmentInformationDetails6 amendmentInformationDetails = new AmendmentInformationDetails6() ;
@@ -201,7 +217,10 @@ public class AdeudoDirecto {
             mandateRelatedInformation.setAmdmntInfDtls( amendmentInformationDetails );
 
         }
-        */
+*/
+
+
+        // -----
 
 
         BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification4 = new BranchAndFinancialInstitutionIdentification4();
@@ -220,7 +239,12 @@ public class AdeudoDirecto {
             organisationIdentificationSchemeName1Choice.setCd("CORE");
             GenericOrganisationIdentification1 genericOrganisationIdentification1 = new GenericOrganisationIdentification1();
             genericOrganisationIdentification1.setSchmeNm(organisationIdentificationSchemeName1Choice);
-            genericOrganisationIdentification1.setId(sepaOperacion.getNIFDeudor());          // Todo: ¿Es este campo?
+
+            try {
+                genericOrganisationIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaOperacion.getNIFDeudor(), sepaOperacion.getSufijoDeudor(), "ES"));
+            } catch (InvalidDataException e) {
+                throw new StopProcessingException(e);
+            }
             organisationIdentification.getOthr().add(genericOrganisationIdentification1);
         } else {
             PersonIdentification5 personIdentification5 = new PersonIdentification5();
@@ -229,7 +253,11 @@ public class AdeudoDirecto {
             GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
 
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
-            genericPersonIdentification1.setId(sepaOperacion.getNIFDeudor());             // Todo: ¿Es este campo?
+            try {
+                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaOperacion.getNIFDeudor(), sepaOperacion.getSufijoDeudor(), "ES"));
+            } catch (InvalidDataException e) {
+                throw new StopProcessingException(e);
+            }
             personIdentification5.getOthr().add(genericPersonIdentification1);
             party6Choice.setPrvtId(personIdentification5);
         }
@@ -259,13 +287,7 @@ public class AdeudoDirecto {
     }
 
 
-    public void addPaymentGroup(DirectDebitPaymentGroup paymentGroup) {
-        //TODO update control sum e numTransactions;
-        document.getCstmrDrctDbtInitn().getPmtInf().add(paymentGroup.getInformation());
-    }
-
-
-    private GroupHeader39 getGroupHeader(SepaFichero sepaFichero) {
+    private GroupHeader39 getGroupHeader(SepaFichero sepaFichero) throws StopProcessingException {
         // Create group header
         GroupHeader39 groupHeader = new GroupHeader39();
         groupHeader.setMsgId(sepaFichero.getMsgId());
@@ -308,6 +330,11 @@ public class AdeudoDirecto {
 
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
             genericPersonIdentification1.setId(sepaFichero.getPresentadorNIF()); // Todo: ¿Es este campo?
+            try {
+                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), "ES"));
+            } catch (InvalidDataException e) {
+                throw new StopProcessingException(e);
+            }
             personIdentification5.getOthr().add(genericPersonIdentification1);
             party6Choice.setPrvtId(personIdentification5);
         }
