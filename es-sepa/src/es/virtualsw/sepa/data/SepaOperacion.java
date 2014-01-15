@@ -1,6 +1,7 @@
 package es.virtualsw.sepa.data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by
@@ -16,7 +17,7 @@ public interface SepaOperacion {
     String getIdOperacionExtremo() ;
     BigDecimal getImporte() ;
     String getIdMandato() ;
-    String getFechaDeMandato() ;
+    Date getFechaDeMandato() ;
     String getIdModificacionDeMandato() ;
     String getNombreAnteriorDeAcreedor() ;
     String getIdAnteriorDeAcreedor() ;

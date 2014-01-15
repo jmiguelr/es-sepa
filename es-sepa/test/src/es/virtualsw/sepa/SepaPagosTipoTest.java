@@ -1,6 +1,9 @@
 package src.es.virtualsw.sepa;
 
 import es.virtualsw.sepa.data.SepaPago;
+import iso.std.iso._20022.tech.xsd.pain_008_001_02.SequenceType1Code;
+
+import java.util.Date;
 
 /**
  * Created by
@@ -11,27 +14,27 @@ import es.virtualsw.sepa.data.SepaPago;
 public class SepaPagosTipoTest implements SepaPago {
     @Override
     public String getidFichero() {
-        return null;
+        return "idFichero";
     }
 
     @Override
     public String getIdPago() {
-        return null;
+        return "idPago";
     }
 
     @Override
-    public boolean isUnUnicoApuntePorElTotal() {
+    public boolean esUnUnicoApuntePorElTotal() {
         return false;
     }
 
     @Override
-    public String getTipoDeSecuencia() {
-        return null;
+    public SequenceType1Code getTipoDeSecuencia() {
+        return SequenceType1Code.FNAL;
     }
 
     @Override
-    public String getFechaDeCobro() {
-        return null;
+    public Date getFechaDeCobro() {
+        return new Date();
     }
 
     @Override
@@ -41,36 +44,36 @@ public class SepaPagosTipoTest implements SepaPago {
 
     @Override
     public String getAcreedorNIF() {
-        return null;
+        return "AcreedorNif";
     }
 
     @Override
     public String getAcreedorSufijo() {
-        return null;
+        return "SUF";
     }
 
     @Override
     public String getAcreedorNombre() {
-        return null;
+        return "Acreedor Nombre";
     }
 
     @Override
     public String getAcreedorPais() {
-        return null;
+        return "UK";
     }
 
     @Override
     public String getAcreedorDireccion() {
-        return null;
+        return "London Town";
     }
 
     @Override
     public String getAcreedorIBAN() {
-        return null;
+        return "Acreedor Iban";
     }
 
     @Override
     public String getAcreedorBIC() {
-        return null;
+        return "AcreedorBIC";
     }
 }

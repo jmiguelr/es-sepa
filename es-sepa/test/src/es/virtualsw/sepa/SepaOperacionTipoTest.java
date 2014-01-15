@@ -4,6 +4,7 @@ import es.virtualsw.sepa.data.SepaOperacion;
 import es.virtualsw.sepa.data.SepaPago;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by
@@ -43,8 +44,8 @@ public class SepaOperacionTipoTest implements SepaOperacion {
     }
 
     @Override
-    public String getFechaDeMandato() {
-        return "12/12/2015";
+    public Date getFechaDeMandato() {
+        return new Date();
     }
 
     @Override

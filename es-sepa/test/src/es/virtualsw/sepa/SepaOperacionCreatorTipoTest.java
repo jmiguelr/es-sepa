@@ -22,6 +22,7 @@ public class SepaOperacionCreatorTipoTest implements SepaOperacionCreator {
 
         sepaOperaciones = new Vector<SepaOperacion>() ;
         sepaOperaciones.add( new SepaOperacionTipoTest() ) ;
+        sepaOperaciones.add( new SepaOperacionTipoTest() ) ;
 
 
     }

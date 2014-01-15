@@ -1,7 +1,11 @@
 package src.es.virtualsw.sepa;
 
+import es.virtualsw.sepa.AdeudoDirecto;
 import es.virtualsw.sepa.data.*;
+import es.virtualsw.sepa.exceptions.StopProcessingException;
 
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.util.Vector;
 
 /**
@@ -27,7 +31,16 @@ public class testBasico extends junit.framework.TestCase {
     }
 
     private void creaDoc(SepaFicheroCreator sepaFicheroCreator, SepaPagoCreator sepaPagoCreator, SepaOperacionCreator sepaOperacionCreator) {
+        AdeudoDirecto adeudoDirecto = new AdeudoDirecto(sepaFicheroCreator, sepaPagoCreator, sepaOperacionCreator) ;
 
+        try {
+            adeudoDirecto.generaDocumento() ;
+            adeudoDirecto.write("/tmp/1.xml");
+            assertTrue(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
     }
 
 }

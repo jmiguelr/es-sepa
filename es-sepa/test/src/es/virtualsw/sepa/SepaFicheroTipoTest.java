@@ -18,17 +18,17 @@ public class SepaFicheroTipoTest implements SepaFichero {
 
     @Override
     public String getIdFichero() {
-        return id;
+        return "idFichero";
     }
 
     @Override
     public String getMsgId() {
-        return "XX";
+        return "_msgId_";
     }
 
     @Override
     public String getFechaDeCreacion() {
-        return "XX";
+        return "12/12/12";
     }
 
     @Override
@@ -38,21 +38,21 @@ public class SepaFicheroTipoTest implements SepaFichero {
 
     @Override
     public String getPresentadorNIF() {
-        return "XX";
+        return "_presentadorNif_";
     }
 
     @Override
     public String getPresentadorSufijo() {
-        return "XX";
+        return "_presentadorSufijo_";
     }
 
     @Override
     public String getPresentadorPais() {
-        return "XX";
+        return "ES";
     }
 
     @Override
     public String getPresentadorNombre() {
-        return "XX";
+        return "Jose Miguel";
     }
 }
