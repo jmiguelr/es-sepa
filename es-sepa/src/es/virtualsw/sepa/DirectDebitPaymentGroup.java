@@ -7,10 +7,14 @@ import java.util.Date;
 
 /**
  * Original author comment:
- *
+ * <p/>
  * Helper class to build a Direct Debit payment group. A payment group holds a collection of payment transactions.
  *
  * @author Joao Osorio (joao.osorio@sibace.pt)
+ *         <p/>
+ *         <p/>
+ *         Comment from jmiguel: PLEASE NOTE THAT THIS CLASS LOOKS LIKE IT'S NOT FINISHED BY ORIGINAL AUTHOR
+ *         It's untouched from original repo https://github.com/joaoosorio/pt-sepa-iso20022 just as reference
  */
 public class DirectDebitPaymentGroup {
 

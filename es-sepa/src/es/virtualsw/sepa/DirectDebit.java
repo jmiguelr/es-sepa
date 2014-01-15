@@ -19,6 +19,11 @@ import java.util.Date;
  * Iso classes were created using the xjc compiler and the pain.008.001.02.xsd schema available at the ISO 20022 web site (www.iso20022.org)
  *
  * @author "Joao Osorio <joao.osorio@sibace.pt>"
+ *
+ *
+ * Comment from jmiguel: PLEASE NOTE THAT THIS CLASS LOOKS LIKE IT'S NOT FINISHED BY ORIGINAL AUTHOR
+ * It's untouched from original repo https://github.com/joaoosorio/pt-sepa-iso20022 just as reference
+ *
  */
 
 public class DirectDebit {
