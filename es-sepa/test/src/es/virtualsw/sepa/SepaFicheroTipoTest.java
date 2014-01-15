@@ -2,6 +2,8 @@ package src.es.virtualsw.sepa;
 
 import es.virtualsw.sepa.data.SepaFichero;
 
+import java.util.Date;
+
 /**
  * Created by
  * User: jmiguel
@@ -27,8 +29,8 @@ public class SepaFicheroTipoTest implements SepaFichero {
     }
 
     @Override
-    public String getFechaDeCreacion() {
-        return "12/12/12";
+    public Date getFechaDeCreacion() {
+        return new Date();
     }
 
     @Override

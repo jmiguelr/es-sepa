@@ -1,5 +1,7 @@
 package es.virtualsw.sepa.data;
 
+import java.util.Date;
+
 /**
  * Created by
  * User: jmiguel
@@ -9,7 +11,7 @@ package es.virtualsw.sepa.data;
 public interface SepaFichero {
     String getIdFichero() ;
     String getMsgId() ;
-    String getFechaDeCreacion() ;
+    Date getFechaDeCreacion() ;
     boolean esPresentadorPersonaJuridica() ;
     String getPresentadorNIF() ;
     String getPresentadorSufijo() ;
