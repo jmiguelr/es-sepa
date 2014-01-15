@@ -161,8 +161,8 @@ public class SepaUtils {
     public static String identificadorUnicoDeInterviniente(String nif, String codComercial, String codigoDePais) throws InvalidDataException {
         String codigoDeInterviniente = "";
 
-        if( nif == null || codComercial == null || codigoDePais == null ) {
-            throw  new InvalidDataException("Invalid Data: some required parameter is null") ;
+        if (nif == null || codComercial == null || codigoDePais == null) {
+            throw new InvalidDataException("Invalid Data: some required parameter is null");
         }
 
         nif = nif.toUpperCase();
@@ -199,7 +199,7 @@ public class SepaUtils {
         return codigoDeInterviniente;
     }
 
-    private static String generaDigitoControl(String nif, String codigoDePais) {
+    private static String generaDigitoControl(String nif, String codigoDePais) throws InvalidDataException {
         String numbers = "0123456789";
         String cadena = nif + codigoDePais + ADD_TO_DC;
         String retorno = cadena;
@@ -213,18 +213,27 @@ public class SepaUtils {
             }
         }
 
-        //YA TENEMOS LA CADENA CON SOLO NUMEROS
-        //LA TRASFORMAMOS A NUMEROS Y SACAMOS SU MOD 97
-        //Y RESTAMOS A 98 EL RESTO DE LA OPERACI�N
-        int resto = (int) (Long.parseLong(retorno) % VALUE_DIVISOR_MODELO);
 
-        resto = VALUE_MODELO - resto;
+        try {
+            // ya tenemos la cadena solo con numeros como requiere la especificacion
+            // La pasamos a numeros, sacamos el mod(97) y restamos de 98 para obtener el resultado final
+            int resto = (int) (Long.parseLong(retorno) % VALUE_DIVISOR_MODELO);
 
-        if (resto < 10) {
-            retorno = "0" + resto;
-        } else {
-            retorno = String.valueOf(resto);
+            // Si algun dia el valor anterior se fuera de rango de Long habria que usar BigInteger, algo como:
+            // int resto =  new Integer(new BigInteger(retorno).mod(  new BigInteger( "" + VALUE_DIVISOR_MODELO) ).toString()).intValue() ;
+
+            resto = VALUE_MODELO - resto;
+
+            if (resto < 10) {
+                retorno = "0" + resto;
+            } else {
+                retorno = "" + resto;
+            }
+
+        } catch (NumberFormatException e) {
+            throw new InvalidDataException(e);
         }
+
 
         return retorno;
     }

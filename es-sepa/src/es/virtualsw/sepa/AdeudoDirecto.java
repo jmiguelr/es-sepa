@@ -17,6 +17,9 @@ import java.util.Date;
 import java.util.Vector;
 
 /**
+ * Work from jmiguel@virtualsw.es ( AKA: jmiguel.rodriguel@gmail.com , AKA: me@jmiguel.eu ) and oscar@virtualsw.com
+ *
+ *
  * Based on original work from: https://github.com/joaoosorio/pt-sepa-iso20022
  * <p/>
  * <p/>
@@ -33,6 +36,8 @@ public class AdeudoDirecto {
     private SepaFicheroCreator sepaFicheroCreator;
     private SepaPagoCreator sepaPagoCreator;
     private SepaOperacionCreator sepaOperacionCreator;
+    private static final String DEFAULT_COUNTRY = "ES";
+
 
     /**
      * Initialize a SEPA Direct Debit Document
@@ -142,7 +147,7 @@ public class AdeudoDirecto {
 
 
         try {
-            genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago.getAcreedorNIF(), sepaPago.getAcreedorSufijo(), "ES"));
+            genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago.getAcreedorNIF(), sepaPago.getAcreedorSufijo(), DEFAULT_COUNTRY));
         } catch (InvalidDataException e) {
             throw new StopProcessingException(e);
         }
@@ -187,39 +192,67 @@ public class AdeudoDirecto {
         // Datos: Anterior y Modif
 
 
-        // mandateRelatedInformation.setAmdmntInd( );  // Todo: AmdmntInd ¿Como se si hay que incluir esta etiqueta?
-
         // TODO: Igual que antes,¿como se si hay que incluir?  ¿Asi que tal?
 
         // ---------
-        /*
-        if( !sepaOperacion.getIdModificacionDeMandato().equals("") ) {
-            AmendmentInformationDetails6 amendmentInformationDetails = new AmendmentInformationDetails6() ;
-            amendmentInformationDetails.setOrgnlMndtId( sepaOperacion.getIdModificacionDeMandato() );
-            PartyIdentification32 partyIdentification32 = new PartyIdentification32();
-            partyIdentification32.setNm( sepaOperacion.getNombreAnteriorDeAcreedor());
-            Party6Choice party6Choice = new Party6Choice();
-            PersonIdentification5 personIdentification5 = new PersonIdentification5() ;
-            GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1() ;
+
+        if (!sepaOperacion.getIdModificacionDeMandato().equals("")) {
+            mandateRelatedInformation.setAmdmntInd(Boolean.TRUE);
+            AmendmentInformationDetails6 amendmentInformationDetails = new AmendmentInformationDetails6();
+            amendmentInformationDetails.setOrgnlMndtId(sepaOperacion.getIdModificacionDeMandato());
+
+            mandateRelatedInformation.setAmdmntInfDtls(amendmentInformationDetails);
+
+            //
+
+            PartyIdentification32 partyIdentification = new PartyIdentification32();
+            partyIdentification.setNm(sepaOperacion.getNombreAnteriorDeAcreedor());
+
+            Party6Choice partyChoice = new Party6Choice();
+            PersonIdentification5 personIdentification = new PersonIdentification5();
+
+            GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
+            PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice = new PersonIdentificationSchemeName1Choice();
+            personIdentificationSchemeName1Choice.setPrtry("SEPA");
+
+            genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
+
+            try {
+                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente("WTF", "WTF", "ES"));     // Todo:
+            } catch (InvalidDataException e) {
+                throw new StopProcessingException(e);
+            }
+
+            personIdentification.getOthr().add(genericPersonIdentification1);
+            partyChoice.setPrvtId(personIdentification);
+            partyIdentification.setId(partyChoice);
+
+            amendmentInformationDetails.setOrgnlCdtrSchmeId(partyIdentification);
 
 
-            genericPersonIdentification1.setSchmeNm(  );
-            genericPersonIdentification1.setId(sepaPago.getAcreedorNIF());     // Todo: ??
+            // Todo: ¿Va esto dentro de este IF?. Creo que si!
+            // Se se ha modificado la cuenta del deudor por otra en LA MISMA entidad
+            if (sepaOperacion.getIBANAnteriorDeDeudor().substring(4, 7).equals(sepaOperacion.getIBANCuentaDeudor().substring(4, 7))) {
+                CashAccount16 cashAccount = new CashAccount16();
+                AccountIdentification4Choice accountIdentification4Choice = new AccountIdentification4Choice();
+                accountIdentification4Choice.setIBAN(sepaOperacion.getIBANAnteriorDeDeudor());
+                cashAccount.setId(accountIdentification4Choice);
+                amendmentInformationDetails.setOrgnlDbtrAcct(cashAccount);
 
+            } else {
+                // Si se ha modificado la cuenta del deudos por otra en DISTINTA entidad
+                BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification = new BranchAndFinancialInstitutionIdentification4();
+                FinancialInstitutionIdentification7 financialInstitutionIdentification = new FinancialInstitutionIdentification7();
 
-            personIdentification5.getOthr().add( genericPersonIdentification1 ) ;
+                GenericFinancialIdentification1 genericFinancialIdentification = new GenericFinancialIdentification1();
+                genericFinancialIdentification.setId("SMNDA");
+                financialInstitutionIdentification.setOthr(genericFinancialIdentification);
 
-            party6Choice.setPrvtId(personIdentification5);
-
-
-            partyIdentification32.setId(party6Choice );
-            amendmentInformationDetails.setOrgnlCdtrSchmeId(partyIdentification32);
-            mandateRelatedInformation.setAmdmntInfDtls( amendmentInformationDetails );
+                branchAndFinancialInstitutionIdentification.setFinInstnId(financialInstitutionIdentification);
+                amendmentInformationDetails.setOrgnlDbtrAgt(branchAndFinancialInstitutionIdentification);
+            }
 
         }
-*/
-
-
         // -----
 
 
@@ -254,7 +287,7 @@ public class AdeudoDirecto {
 
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
             try {
-                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaOperacion.getNIFDeudor(), sepaOperacion.getSufijoDeudor(), "ES"));
+                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaOperacion.getNIFDeudor(), sepaOperacion.getSufijoDeudor(), DEFAULT_COUNTRY));
             } catch (InvalidDataException e) {
                 throw new StopProcessingException(e);
             }
@@ -316,10 +349,14 @@ public class AdeudoDirecto {
             organisationIdentificationSchemeName1Choice.setCd("CORE");
             GenericOrganisationIdentification1 genericOrganisationIdentification1 = new GenericOrganisationIdentification1();
             genericOrganisationIdentification1.setSchmeNm(organisationIdentificationSchemeName1Choice);
-            genericOrganisationIdentification1.setId(sepaFichero.getPresentadorNIF());    // Todo: ¿Es este campo?
+
+            try {
+                genericOrganisationIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), DEFAULT_COUNTRY));
+            } catch (InvalidDataException e) {
+                throw new StopProcessingException(e);
+            }
 
             organisationIdentification.getOthr().add(genericOrganisationIdentification1);
-
             party6Choice.setOrgId(organisationIdentification);
 
         } else {
@@ -329,9 +366,8 @@ public class AdeudoDirecto {
             GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
 
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
-            genericPersonIdentification1.setId(sepaFichero.getPresentadorNIF()); // Todo: ¿Es este campo?
             try {
-                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), "ES"));
+                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), DEFAULT_COUNTRY));
             } catch (InvalidDataException e) {
                 throw new StopProcessingException(e);
             }
@@ -345,10 +381,15 @@ public class AdeudoDirecto {
     }
 
 
-    /**
-     * @throws java.io.IOException
-     */
     public void write(File outputFile) throws JAXBException, IOException {
+        write(outputFile, true);
+    }
+
+    public void write(String fileName) throws JAXBException, IOException {
+        write(new File(fileName));
+    }
+
+    public void write(File outputFile, boolean formattedOutput) throws JAXBException, IOException {
         FileWriter file = new FileWriter(outputFile);
         JAXBContext jc = JAXBContext.newInstance(Document.class);
         Marshaller marshaller = jc.createMarshaller();
@@ -356,10 +397,6 @@ public class AdeudoDirecto {
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         marshaller.marshal(new ObjectFactory().createDocument(document), new BufferedWriter(file));
         file.close();
-    }
-
-    public void write(String fileName) throws JAXBException, IOException {
-        write(new File(fileName));
     }
 
 }

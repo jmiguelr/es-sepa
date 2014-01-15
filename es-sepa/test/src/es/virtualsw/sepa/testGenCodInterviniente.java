@@ -15,7 +15,7 @@ public class testGenCodInterviniente extends TestCase {
 
     public void testGenerarCodInterviniente() throws InvalidDataException {
 
-        String nif = "A12345678";
+        String nif = "ZZ999999999";
         String codComercial = "000";
         String codPais = "ES";
 
