@@ -411,7 +411,7 @@ public class AdeudoDirecto {
         FileWriter file = new FileWriter(outputFile);
         JAXBContext jc = JAXBContext.newInstance(Document.class);
         Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         marshaller.marshal(new ObjectFactory().createDocument(document), new BufferedWriter(file));
         file.close();
