@@ -18,18 +18,18 @@ import java.util.Vector;
 
 /**
  * Work from jmiguel@virtualsw.es ( AKA: jmiguel.rodriguel@gmail.com , AKA: me@jmiguel.eu ) and oscar@virtualsw.com
- *
+ * <p/>
  * This source code is licensed under Apache 2.0 license schema: you can modify and distribute this piece of software ine
  * any way you want. Altought not needed, we'd be glad to see this text included whenever you use this software and a recognition
  * message to know our work has been useful for you. A good place could be the github page https://github.com/jmiguelr/es-sepa
- *
- *
+ * <p/>
+ * <p/>
  * Fuentes creados por jmiguel@virtualsw.es ( AKA: jmiguel.rodriguel@gmail.com , AKA: me@jmiguel.eu ) y oscar@virtualsw.com
  * Este codigo fuente se distribuye con licencia Apache 2.0, asi que puede modificarlo o distribuirlo de la forma que quieras.
  * Aunque no se requiere, se agradeceria que incluyeras este texto donde vayas a usar este software y que nos enviaras un
  * mensaje para saber que nuestro trabajo ha sido util para ti. Un buen sitio, puede ser en la pagina del repositorio de GitHub
  * https://github.com/jmiguelr/es-sepa
- *
+ * <p/>
  * Remotely based on original work from: https://github.com/joaoosorio/pt-sepa-iso20022
  * <p/>
  * <p/>
@@ -70,7 +70,7 @@ public class AdeudoDirecto {
         // Initialize message root
         document.setCstmrDrctDbtInitn(new CustomerDirectDebitInitiationV02());
 
-        GroupHeader39 groupHeader = getGroupHeader(sepaFichero);
+        GroupHeader39 groupHeader = generaGroupHeader(sepaFichero);
 
         // Add group header to document
         document.getCstmrDrctDbtInitn().setGrpHdr(groupHeader);
@@ -79,24 +79,96 @@ public class AdeudoDirecto {
         // Comienza el proceso de pagos
         sepaPagoCreator.process(sepaFichero);
         Vector<SepaPago> sepaPagos = sepaPagoCreator.getSepaPagos();
+
+        PaymentInstructionInformation4 paymentInstructionInformation;
+        int dummyTxCounter;
+        int prevTxCount;
+
         for (SepaPago sepaPago : sepaPagos) {
-            addSepaPago(sepaFichero, sepaPago);
+            paymentInstructionInformation = generaSepaPago(sepaFichero, sepaPago);
+            document.getCstmrDrctDbtInitn().getPmtInf().add(paymentInstructionInformation);
+
+
+            // Actualizamos contadores.
+            prevTxCount = Integer.parseInt(document.getCstmrDrctDbtInitn().getGrpHdr().getNbOfTxs());
+            dummyTxCounter = Integer.parseInt(paymentInstructionInformation.getNbOfTxs());
+            document.getCstmrDrctDbtInitn().getGrpHdr().setNbOfTxs(Integer.toString(prevTxCount + dummyTxCounter)) ;
+
+            document.getCstmrDrctDbtInitn().getGrpHdr().setCtrlSum(  document.getCstmrDrctDbtInitn().getGrpHdr().getCtrlSum().add( paymentInstructionInformation.getCtrlSum()   )   );
 
         }
 
-        // TODO: Actualizar el numero de transacciones, CheckSums...
 
     }
 
 
-    private void addSepaPago(SepaFichero sepaFichero, SepaPago sepaPago) throws StopProcessingException {
+    private GroupHeader39 generaGroupHeader(SepaFichero sepaFichero) throws StopProcessingException {
+        // Create group header
+        GroupHeader39 groupHeader = new GroupHeader39();
+        groupHeader.setMsgId(sepaFichero.getMsgId());
+
+        // Set date
+        groupHeader.setCreDtTm(SepaUtils.ISODateTime(new Date()));
+
+        // Set number of transactions
+        groupHeader.setNbOfTxs("0");
+        // Set control Sum
+        groupHeader.setCtrlSum(BigDecimal.ZERO);        // TODO: Esto hay que reemplazarlo al terminar el documento.
+
+
+        // InitgPty
+        PartyIdentification32 party = new PartyIdentification32();
+        party.setNm(sepaFichero.getPresentadorNombre());
+
+        // Id de InitgPty
+        Party6Choice party6Choice = new Party6Choice();
+
+        //   <OrgId> O <PrvtId>
+        if (sepaFichero.esPresentadorPersonaJuridica()) {
+            OrganisationIdentification4 organisationIdentification = new OrganisationIdentification4();
+
+            OrganisationIdentificationSchemeName1Choice organisationIdentificationSchemeName1Choice = new OrganisationIdentificationSchemeName1Choice();
+            organisationIdentificationSchemeName1Choice.setCd("CORE");
+            GenericOrganisationIdentification1 genericOrganisationIdentification1 = new GenericOrganisationIdentification1();
+            genericOrganisationIdentification1.setSchmeNm(organisationIdentificationSchemeName1Choice);
+
+            try {
+                genericOrganisationIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), DEFAULT_COUNTRY));
+            } catch (InvalidDataException e) {
+                throw new StopProcessingException(e);
+            }
+
+            organisationIdentification.getOthr().add(genericOrganisationIdentification1);
+            party6Choice.setOrgId(organisationIdentification);
+
+        } else {
+            PersonIdentification5 personIdentification5 = new PersonIdentification5();
+            PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice = new PersonIdentificationSchemeName1Choice();
+            personIdentificationSchemeName1Choice.setCd("CORE");
+            GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
+
+            genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
+            try {
+                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), DEFAULT_COUNTRY));
+            } catch (InvalidDataException e) {
+                throw new StopProcessingException(e);
+            }
+            personIdentification5.getOthr().add(genericPersonIdentification1);
+            party6Choice.setPrvtId(personIdentification5);
+        }
+
+        party.setId(party6Choice);
+        groupHeader.setInitgPty(party);
+        return groupHeader;
+    }
+
+
+    private PaymentInstructionInformation4 generaSepaPago(SepaFichero sepaFichero, SepaPago sepaPago) throws StopProcessingException {
 
 
         PaymentInstructionInformation4 paymentInstructionInformation = new PaymentInstructionInformation4();
         paymentInstructionInformation.setPmtInfId(sepaPago.getIdPago());
 
-
-        document.getCstmrDrctDbtInitn().getPmtInf().add(paymentInstructionInformation);
 
         paymentInstructionInformation.setPmtMtd(PaymentMethod2Code.DD);
         paymentInstructionInformation.setBtchBookg(sepaPago.esUnUnicoApuntePorElTotal());
@@ -171,16 +243,25 @@ public class AdeudoDirecto {
 
         sepaOperacionCreator.process(sepaPago);
         Vector<SepaOperacion> sepaOperaciones = sepaOperacionCreator.getSepaOperaciones();
-
+        DirectDebitTransactionInformation9 directDebitTransactionInformation;
+        int dummyCounter;
         for (SepaOperacion sepaOperacion : sepaOperaciones) {
-            addSepaOperacion(sepaFichero, sepaPago, sepaOperacion);
+            directDebitTransactionInformation = generaSepaOperacion(sepaFichero, sepaPago, sepaOperacion);
+
+            paymentInstructionInformation.getDrctDbtTxInf().add(directDebitTransactionInformation);
+
+            // Actualizamos los valores de numeros de transacciones e importe
+            dummyCounter = new Integer(paymentInstructionInformation.getNbOfTxs()).intValue();
+            paymentInstructionInformation.setNbOfTxs("" + (++dummyCounter));
+            paymentInstructionInformation.setCtrlSum(paymentInstructionInformation.getCtrlSum().add(directDebitTransactionInformation.getInstdAmt().getValue()));
+
         }
 
+        return paymentInstructionInformation;
 
     }
 
-    private void addSepaOperacion(SepaFichero sepaFichero, SepaPago sepaPago, SepaOperacion sepaOperacion) throws StopProcessingException {
-
+    private DirectDebitTransactionInformation9 generaSepaOperacion(SepaFichero sepaFichero, SepaPago sepaPago, SepaOperacion sepaOperacion) throws StopProcessingException {
         DirectDebitTransactionInformation9 transaction = new DirectDebitTransactionInformation9();
         PaymentIdentification1 paymentIdentification = new PaymentIdentification1();
         paymentIdentification.setInstrId(sepaOperacion.getIdOperacion());
@@ -200,10 +281,6 @@ public class AdeudoDirecto {
 
 
         // Datos: Anterior y Modif
-
-
-        // TODO: Igual que antes,¿como se si hay que incluir?  ¿Asi que tal?
-
         // ---------
 
         if (!sepaOperacion.getIdModificacionDeMandato().equals("")) {
@@ -226,12 +303,7 @@ public class AdeudoDirecto {
             personIdentificationSchemeName1Choice.setPrtry("SEPA");
 
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
-
-            try {
-                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente("WTF", "WTF", "ES"));     // Todo:
-            } catch (InvalidDataException e) {
-                throw new StopProcessingException(e);
-            }
+            genericPersonIdentification1.setId(sepaOperacion.getIdAnteriorDeAcreedor());
 
             personIdentification.getOthr().add(genericPersonIdentification1);
             partyChoice.setPrvtId(personIdentification);
@@ -240,7 +312,6 @@ public class AdeudoDirecto {
             amendmentInformationDetails.setOrgnlCdtrSchmeId(partyIdentification);
 
 
-            // Todo: ¿Va esto dentro de este IF?. Creo que si!
             // Se se ha modificado la cuenta del deudor por otra en LA MISMA entidad
             if (sepaOperacion.getIBANAnteriorDeDeudor().substring(4, 7).equals(sepaOperacion.getIBANCuentaDeudor().substring(4, 7))) {
                 CashAccount16 cashAccount = new CashAccount16();
@@ -323,71 +394,8 @@ public class AdeudoDirecto {
         transaction.setDrctDbtTx(directDebitTransaction);
 
 
-        paymentInstructionInformation.getDrctDbtTxInf().add(transaction);
-        document.getCstmrDrctDbtInitn().getPmtInf().add(paymentInstructionInformation);
+        return transaction;
 
-
-    }
-
-
-    private GroupHeader39 getGroupHeader(SepaFichero sepaFichero) throws StopProcessingException {
-        // Create group header
-        GroupHeader39 groupHeader = new GroupHeader39();
-        groupHeader.setMsgId(sepaFichero.getMsgId());
-
-        // Set date
-        groupHeader.setCreDtTm(SepaUtils.ISODateTime(new Date()));
-
-        // Set number of transactions
-        groupHeader.setNbOfTxs("0");
-        // Set control Sum
-        groupHeader.setCtrlSum(BigDecimal.ZERO);        // TODO: Esto hay que reemplazarlo al terminar el documento.
-
-
-        // InitgPty
-        PartyIdentification32 party = new PartyIdentification32();
-        party.setNm(sepaFichero.getPresentadorNombre());
-
-        // Id de InitgPty
-        Party6Choice party6Choice = new Party6Choice();
-
-        //   <OrgId> O <PrvtId>
-        if (sepaFichero.esPresentadorPersonaJuridica()) {
-            OrganisationIdentification4 organisationIdentification = new OrganisationIdentification4();
-
-            OrganisationIdentificationSchemeName1Choice organisationIdentificationSchemeName1Choice = new OrganisationIdentificationSchemeName1Choice();
-            organisationIdentificationSchemeName1Choice.setCd("CORE");
-            GenericOrganisationIdentification1 genericOrganisationIdentification1 = new GenericOrganisationIdentification1();
-            genericOrganisationIdentification1.setSchmeNm(organisationIdentificationSchemeName1Choice);
-
-            try {
-                genericOrganisationIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), DEFAULT_COUNTRY));
-            } catch (InvalidDataException e) {
-                throw new StopProcessingException(e);
-            }
-
-            organisationIdentification.getOthr().add(genericOrganisationIdentification1);
-            party6Choice.setOrgId(organisationIdentification);
-
-        } else {
-            PersonIdentification5 personIdentification5 = new PersonIdentification5();
-            PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice = new PersonIdentificationSchemeName1Choice();
-            personIdentificationSchemeName1Choice.setCd("CORE");
-            GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
-
-            genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
-            try {
-                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), DEFAULT_COUNTRY));
-            } catch (InvalidDataException e) {
-                throw new StopProcessingException(e);
-            }
-            personIdentification5.getOthr().add(genericPersonIdentification1);
-            party6Choice.setPrvtId(personIdentification5);
-        }
-
-        party.setId(party6Choice);
-        groupHeader.setInitgPty(party);
-        return groupHeader;
     }
 
 

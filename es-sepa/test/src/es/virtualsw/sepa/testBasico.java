@@ -4,6 +4,10 @@ import es.virtualsw.sepa.AdeudoDirecto;
 import es.virtualsw.sepa.data.SepaFicheroCreator;
 import es.virtualsw.sepa.data.SepaOperacionCreator;
 import es.virtualsw.sepa.data.SepaPagoCreator;
+import iso.std.iso._20022.tech.xsd.pain_008_001_02.Document;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * Work from jmiguel@virtualsw.es ( AKA: jmiguel.rodriguel@gmail.com , AKA: me@jmiguel.eu ) and oscar@virtualsw.com
@@ -27,17 +31,14 @@ import es.virtualsw.sepa.data.SepaPagoCreator;
 public class testBasico extends junit.framework.TestCase {
 
 
-    public void testBasico1() throws Exception {
+    public void testCreateNewDocument_1() throws Exception {
         String idFicheroAExportar = "MyID";
 
         SepaFicheroCreator sepaFicheroCreator = new SepaFicheroCreatorTipoTest(idFicheroAExportar);
         SepaPagoCreator sepaPagoCreator = new SepaPagoCreatorTipoTest();
         SepaOperacionCreator sepaOperacionCreator = new SepaOperacionCreatorTipoTest();
 
-
         creaDoc(sepaFicheroCreator, sepaPagoCreator, sepaOperacionCreator);
-
-
     }
 
     private void creaDoc(SepaFicheroCreator sepaFicheroCreator, SepaPagoCreator sepaPagoCreator, SepaOperacionCreator sepaOperacionCreator) {
@@ -52,5 +53,21 @@ public class testBasico extends junit.framework.TestCase {
             assertTrue(false);
         }
     }
+
+/*
+    public void testReadDocument_1() throws Exception {
+        JAXBContext jc = JAXBContext.newInstance(Document.class);
+        // Crear desclasificador
+        Unmarshaller um = jc.createUnmarshaller();
+        // Desclasificar contenido XML del archivo myDoc.xml en la instancia de objetoJava  .
+        Document myJAXBObject = (Document) um.unmarshal(new java.io.FileInputStream( "/tmp/1.xml" ));
+        System.out.println( myJAXBObject.getCstmrDrctDbtInitn().getGrpHdr().getMsgId() );
+    }
+*/
+
+
+
+
+
 
 }

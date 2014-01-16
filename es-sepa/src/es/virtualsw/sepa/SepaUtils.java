@@ -100,6 +100,7 @@ public class SepaUtils {
     }
 
 
+    // For Portugal:
     public static Map<String, String> NibToBicMapping;
 
     static {

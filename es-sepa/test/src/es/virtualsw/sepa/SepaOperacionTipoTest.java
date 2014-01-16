@@ -47,7 +47,7 @@ public class SepaOperacionTipoTest implements SepaOperacion {
 
     @Override
     public BigDecimal getImporte() {
-        return new BigDecimal("1000.11");
+        return new BigDecimal("2.10");
     }
 
     @Override
