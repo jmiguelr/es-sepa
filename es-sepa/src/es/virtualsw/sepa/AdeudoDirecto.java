@@ -360,13 +360,15 @@ public class AdeudoDirecto {
                 throw new StopProcessingException(e);
             }
             organisationIdentification.getOthr().add(genericOrganisationIdentification1);
+            party6Choice.setOrgId(organisationIdentification);
+
         } else {
             PersonIdentification5 personIdentification5 = new PersonIdentification5();
             PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice = new PersonIdentificationSchemeName1Choice();
             personIdentificationSchemeName1Choice.setCd("CORE");
             GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
-
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
+
             try {
                 genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaOperacion.getNIFDeudor(), sepaOperacion.getSufijoDeudor(), DEFAULT_COUNTRY));
             } catch (InvalidDataException e) {
