@@ -34,8 +34,10 @@ public class SepaOperacionCreatorTipoTest implements SepaOperacionCreator {
         // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
 
         sepaOperaciones = new Vector<SepaOperacion>();
-        sepaOperaciones.add(new SepaOperacionTipoTest());
-        sepaOperaciones.add(new SepaOperacionTipoTest());
+        for ( int i = 0 ; i< 2 ; i++) {
+            sepaOperaciones.add(new SepaOperacionTipoTest());
+        }
+
 
 
     }

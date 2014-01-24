@@ -34,8 +34,11 @@ public class SepaPagoCreatorTipoTest implements SepaPagoCreator {
     public void process(SepaFichero sepaFichero) throws StopProcessingException {
         // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
         sepaPagos = new Vector<SepaPago>();
-        sepaPagos.add(new SepaPagosTipoTest());
-        sepaPagos.add(new SepaPagosTipoTest());
+
+        for ( int i = 0 ; i< 2 ; i++) {
+            sepaPagos.add(new SepaPagosTipoTest());
+        }
+
     }
 
     @Override

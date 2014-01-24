@@ -83,6 +83,7 @@ public class AdeudoDirecto {
         PaymentInstructionInformation4 paymentInstructionInformation;
         int dummyTxCounter;
         int prevTxCount;
+        BigDecimal importeAcumulado ;
 
         for (SepaPago sepaPago : sepaPagos) {
             paymentInstructionInformation = generaSepaPago(sepaFichero, sepaPago);
@@ -94,7 +95,11 @@ public class AdeudoDirecto {
             dummyTxCounter = Integer.parseInt(paymentInstructionInformation.getNbOfTxs());
             document.getCstmrDrctDbtInitn().getGrpHdr().setNbOfTxs(Integer.toString(prevTxCount + dummyTxCounter)) ;
 
-            document.getCstmrDrctDbtInitn().getGrpHdr().setCtrlSum(  document.getCstmrDrctDbtInitn().getGrpHdr().getCtrlSum().add( paymentInstructionInformation.getCtrlSum()   )   );
+            // Actualizamos importe
+            importeAcumulado = document.getCstmrDrctDbtInitn().getGrpHdr().getCtrlSum() ;
+            importeAcumulado = importeAcumulado.add(paymentInstructionInformation.getCtrlSum()) ;
+            importeAcumulado = importeAcumulado.setScale(2) ;
+            document.getCstmrDrctDbtInitn().getGrpHdr().setCtrlSum( importeAcumulado ) ;
 
         }
 
@@ -245,6 +250,7 @@ public class AdeudoDirecto {
         Vector<SepaOperacion> sepaOperaciones = sepaOperacionCreator.getSepaOperaciones();
         DirectDebitTransactionInformation9 directDebitTransactionInformation;
         int dummyCounter;
+        BigDecimal importeAcumulado ;
         for (SepaOperacion sepaOperacion : sepaOperaciones) {
             directDebitTransactionInformation = generaSepaOperacion(sepaFichero, sepaPago, sepaOperacion);
 
@@ -253,7 +259,11 @@ public class AdeudoDirecto {
             // Actualizamos los valores de numeros de transacciones e importe
             dummyCounter = new Integer(paymentInstructionInformation.getNbOfTxs()).intValue();
             paymentInstructionInformation.setNbOfTxs("" + (++dummyCounter));
-            paymentInstructionInformation.setCtrlSum(paymentInstructionInformation.getCtrlSum().add(directDebitTransactionInformation.getInstdAmt().getValue()));
+
+            importeAcumulado = paymentInstructionInformation.getCtrlSum() ;
+            importeAcumulado = importeAcumulado.add(directDebitTransactionInformation.getInstdAmt().getValue())  ;
+            importeAcumulado = importeAcumulado.setScale(2) ;
+            paymentInstructionInformation.setCtrlSum(importeAcumulado);
 
         }
 
@@ -271,7 +281,7 @@ public class AdeudoDirecto {
 
         ActiveOrHistoricCurrencyAndAmount activeOrHistoricCurrencyAndAmount = new ActiveOrHistoricCurrencyAndAmount();
         activeOrHistoricCurrencyAndAmount.setCcy("EUR");
-        activeOrHistoricCurrencyAndAmount.setValue(sepaOperacion.getImporte());
+        activeOrHistoricCurrencyAndAmount.setValue(sepaOperacion.getImporte().setScale(2));
         transaction.setInstdAmt(activeOrHistoricCurrencyAndAmount);
 
         DirectDebitTransaction6 directDebitTransaction = new DirectDebitTransaction6();

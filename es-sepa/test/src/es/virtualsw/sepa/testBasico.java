@@ -4,10 +4,6 @@ import es.virtualsw.sepa.AdeudoDirecto;
 import es.virtualsw.sepa.data.SepaFicheroCreator;
 import es.virtualsw.sepa.data.SepaOperacionCreator;
 import es.virtualsw.sepa.data.SepaPagoCreator;
-import iso.std.iso._20022.tech.xsd.pain_008_001_02.Document;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 
 /**
  * Work from jmiguel@virtualsw.es ( AKA: jmiguel.rodriguel@gmail.com , AKA: me@jmiguel.eu ) and oscar@virtualsw.com
@@ -60,14 +56,10 @@ public class testBasico extends junit.framework.TestCase {
         // Crear desclasificador
         Unmarshaller um = jc.createUnmarshaller();
         // Desclasificar contenido XML del archivo myDoc.xml en la instancia de objetoJava  .
-        Document myJAXBObject = (Document) um.unmarshal(new java.io.FileInputStream( "/tmp/1.xml" ));
+        Document myJAXBObject = (Document) um.unmarshal( new FileReader( "/tmp/1.xml" ));
         System.out.println( myJAXBObject.getCstmrDrctDbtInitn().getGrpHdr().getMsgId() );
     }
 */
-
-
-
-
 
 
 }
