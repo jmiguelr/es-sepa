@@ -64,4 +64,102 @@ La llamada minima para generar un documento es de la siguiente forma:
 
 ```
 
+Como verás, tenemos unas clases SepaFicheroCreatorTipoTest , SepaPagoCreatorTipoTest y SepaOperacionCreatorTipoTest.
+No te asustes. Son implementaciones simples de la interface que comentaba arriba:
+
+
+**SepaFicheroCreatorTipoTest**
+```java
+public class SepaFicheroCreatorTipoTest implements SepaFicheroCreator {
+    SepaFichero sepaFichero;
+    String idFicheroAImportar;
+
+    public SepaFicheroCreatorTipoTest(String idFicheroAImportar) {
+        this.idFicheroAImportar = idFicheroAImportar;
+    }
+
+
+    @Override
+    public void process() throws StopProcessingException {
+
+        // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
+
+        sepaFichero = new SepaFicheroTipoTest("MiId");
+
+    }
+
+    @Override
+    public SepaFichero getFichero() {
+        return sepaFichero;
+    }
+
+```
+
+En el metodo **process()** es donde tendras que meter tu código para devolver una clase que implemente el
+ interface SepaFichero con los datos que necesites.
+
+
+
+**SepaPagoCreatorTipoTest**
+```java
+public class SepaPagoCreatorTipoTest implements SepaPagoCreator {
+    Vector<SepaPago> sepaPagos;
+
+
+    @Override
+    public void process(SepaFichero sepaFichero) throws StopProcessingException {
+        // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaPago
+        sepaPagos = new Vector<SepaPago>();
+
+        for ( int i = 0 ; i< 2 ; i++) {
+            sepaPagos.add(new SepaPagosTipoTest());
+        }
+
+    }
+
+    @Override
+    public Vector<SepaPago> getSepaPagos() {
+        return sepaPagos;
+    }
+}
+```
+En el metodo **process()** es donde tendras que meter tu código para devolver una clase que implemente el
+interface SepaPago con los datos que necesites para devolver un vector con esos datos.
+En la llamada que se hara a este metodo desde la clase AdeudoDirector se pasará como parametro el SepaFichero que se
+está procesando en ese momento de forma que puedas usarlo como referencia (tipicamente como WHERE en la SELECT
+correspondiente)
+
+
+
+
+**SepaOperacionCreatorTipoTest**
+```java
+public class SepaOperacionCreatorTipoTest implements SepaOperacionCreator {
+    Vector<SepaOperacion> sepaOperaciones;
+
+    @Override
+    public void process(SepaPago _sepaPago) throws StopProcessingException {
+        // TODO: Vamos a BD, o a donde haga falta y creamos el Vector de SepaOperacion
+
+        sepaOperaciones = new Vector<SepaOperacion>();
+        for ( int i = 0 ; i< 2 ; i++) {
+            sepaOperaciones.add(new SepaOperacionTipoTest());
+        }
+
+
+
+    }
+
+    @Override
+    public Vector<SepaOperacion> getSepaOperaciones() {
+        return sepaOperaciones;
+    }
+}
+```
+
+Igual que antes, en el metodo **process()** tendras que meter tu código para devolver una clase que implemente el
+interface SepaOperacion con los datos que necesites para devolver un vector con esos datos. En la llamada que se
+hara a este metodo desde la clase AdeudoDirector se pasará como parametro el SepaPago que se está procesando
+en ese momento de forma que puedas usarlo como referencia (tipicamente como WHERE en la SELECT correspondiente)
+
 
