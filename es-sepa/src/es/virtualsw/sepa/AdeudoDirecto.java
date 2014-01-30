@@ -332,25 +332,28 @@ public class AdeudoDirecto {
             }
 
 
-            // Se se ha modificado la cuenta del deudor por otra en LA MISMA entidad
-            if (sepaOperacion.getIBANAnteriorDeDeudor().substring(4, 7).equals(sepaOperacion.getIBANCuentaDeudor().substring(4, 7))) {
-                CashAccount16 cashAccount = new CashAccount16();
-                AccountIdentification4Choice accountIdentification4Choice = new AccountIdentification4Choice();
-                accountIdentification4Choice.setIBAN(sepaOperacion.getIBANAnteriorDeDeudor());
-                cashAccount.setId(accountIdentification4Choice);
-                amendmentInformationDetails.setOrgnlDbtrAcct(cashAccount);
+            if (sepaOperacion.getIBANAnteriorDeDeudor() != null && sepaOperacion.getIBANCuentaDeudor() != null && sepaOperacion.getIBANAnteriorDeDeudor().length() > 7 && sepaOperacion.getIBANCuentaDeudor().length() > 7) {
+                // Se se ha modificado la cuenta del deudor por otra en LA MISMA entidad
 
-            } else {
-                // Si se ha modificado la cuenta del deudos por otra en DISTINTA entidad
-                BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification = new BranchAndFinancialInstitutionIdentification4();
-                FinancialInstitutionIdentification7 financialInstitutionIdentification = new FinancialInstitutionIdentification7();
+                if (sepaOperacion.getIBANAnteriorDeDeudor().substring(4, 7).equals(sepaOperacion.getIBANCuentaDeudor().substring(4, 7))) {
+                    CashAccount16 cashAccount = new CashAccount16();
+                    AccountIdentification4Choice accountIdentification4Choice = new AccountIdentification4Choice();
+                    accountIdentification4Choice.setIBAN(sepaOperacion.getIBANAnteriorDeDeudor());
+                    cashAccount.setId(accountIdentification4Choice);
+                    amendmentInformationDetails.setOrgnlDbtrAcct(cashAccount);
 
-                GenericFinancialIdentification1 genericFinancialIdentification = new GenericFinancialIdentification1();
-                genericFinancialIdentification.setId("SMNDA");
-                financialInstitutionIdentification.setOthr(genericFinancialIdentification);
+                } else {
+                    // Si se ha modificado la cuenta del deudos por otra en DISTINTA entidad
+                    BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification = new BranchAndFinancialInstitutionIdentification4();
+                    FinancialInstitutionIdentification7 financialInstitutionIdentification = new FinancialInstitutionIdentification7();
 
-                branchAndFinancialInstitutionIdentification.setFinInstnId(financialInstitutionIdentification);
-                amendmentInformationDetails.setOrgnlDbtrAgt(branchAndFinancialInstitutionIdentification);
+                    GenericFinancialIdentification1 genericFinancialIdentification = new GenericFinancialIdentification1();
+                    genericFinancialIdentification.setId("SMNDA");
+                    financialInstitutionIdentification.setOthr(genericFinancialIdentification);
+
+                    branchAndFinancialInstitutionIdentification.setFinInstnId(financialInstitutionIdentification);
+                    amendmentInformationDetails.setOrgnlDbtrAgt(branchAndFinancialInstitutionIdentification);
+                }
             }
 
         }

@@ -77,7 +77,8 @@ public class SepaOperacionTipoTest implements SepaOperacion {
 
     @Override
     public String getIBANAnteriorDeDeudor() {
-        return "IbanAnteriorAcreedor";
+        //return "IbanAnteriorAcreedor";
+        return "";
     }
 
     @Override
