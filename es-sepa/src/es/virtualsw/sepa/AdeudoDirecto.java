@@ -83,7 +83,7 @@ public class AdeudoDirecto {
         PaymentInstructionInformation4 paymentInstructionInformation;
         int dummyTxCounter;
         int prevTxCount;
-        BigDecimal importeAcumulado ;
+        BigDecimal importeAcumulado;
 
         for (SepaPago sepaPago : sepaPagos) {
             paymentInstructionInformation = generaSepaPago(sepaFichero, sepaPago);
@@ -93,13 +93,13 @@ public class AdeudoDirecto {
             // Actualizamos contadores.
             prevTxCount = Integer.parseInt(document.getCstmrDrctDbtInitn().getGrpHdr().getNbOfTxs());
             dummyTxCounter = Integer.parseInt(paymentInstructionInformation.getNbOfTxs());
-            document.getCstmrDrctDbtInitn().getGrpHdr().setNbOfTxs(Integer.toString(prevTxCount + dummyTxCounter)) ;
+            document.getCstmrDrctDbtInitn().getGrpHdr().setNbOfTxs(Integer.toString(prevTxCount + dummyTxCounter));
 
             // Actualizamos importe
-            importeAcumulado = document.getCstmrDrctDbtInitn().getGrpHdr().getCtrlSum() ;
-            importeAcumulado = importeAcumulado.add(paymentInstructionInformation.getCtrlSum()) ;
-            importeAcumulado = importeAcumulado.setScale(2) ;
-            document.getCstmrDrctDbtInitn().getGrpHdr().setCtrlSum( importeAcumulado ) ;
+            importeAcumulado = document.getCstmrDrctDbtInitn().getGrpHdr().getCtrlSum();
+            importeAcumulado = importeAcumulado.add(paymentInstructionInformation.getCtrlSum());
+            importeAcumulado = importeAcumulado.setScale(2);
+            document.getCstmrDrctDbtInitn().getGrpHdr().setCtrlSum(importeAcumulado);
 
         }
 
@@ -250,7 +250,7 @@ public class AdeudoDirecto {
         Vector<SepaOperacion> sepaOperaciones = sepaOperacionCreator.getSepaOperaciones();
         DirectDebitTransactionInformation9 directDebitTransactionInformation;
         int dummyCounter;
-        BigDecimal importeAcumulado ;
+        BigDecimal importeAcumulado;
         for (SepaOperacion sepaOperacion : sepaOperaciones) {
             directDebitTransactionInformation = generaSepaOperacion(sepaFichero, sepaPago, sepaOperacion);
 
@@ -260,9 +260,9 @@ public class AdeudoDirecto {
             dummyCounter = new Integer(paymentInstructionInformation.getNbOfTxs()).intValue();
             paymentInstructionInformation.setNbOfTxs("" + (++dummyCounter));
 
-            importeAcumulado = paymentInstructionInformation.getCtrlSum() ;
-            importeAcumulado = importeAcumulado.add(directDebitTransactionInformation.getInstdAmt().getValue())  ;
-            importeAcumulado = importeAcumulado.setScale(2) ;
+            importeAcumulado = paymentInstructionInformation.getCtrlSum();
+            importeAcumulado = importeAcumulado.add(directDebitTransactionInformation.getInstdAmt().getValue());
+            importeAcumulado = importeAcumulado.setScale(2);
             paymentInstructionInformation.setCtrlSum(importeAcumulado);
 
         }
@@ -293,33 +293,43 @@ public class AdeudoDirecto {
         // Datos: Anterior y Modif
         // ---------
 
-        if (!sepaOperacion.getIdModificacionDeMandato().equals("")) {
+        if (!(sepaOperacion.getIdModificacionDeMandato().equals("") && sepaOperacion.getNombreAnteriorDeAcreedor().equals("") && sepaOperacion.getIdAnteriorDeAcreedor().equals(""))) {
             mandateRelatedInformation.setAmdmntInd(Boolean.TRUE);
+
+
             AmendmentInformationDetails6 amendmentInformationDetails = new AmendmentInformationDetails6();
-            amendmentInformationDetails.setOrgnlMndtId(sepaOperacion.getIdModificacionDeMandato());
 
-            mandateRelatedInformation.setAmdmntInfDtls(amendmentInformationDetails);
+            if (!sepaOperacion.getIdModificacionDeMandato().equals("")) {
 
-            //
+                amendmentInformationDetails.setOrgnlMndtId(sepaOperacion.getIdModificacionDeMandato());
+            }
+            if (!(sepaOperacion.getNombreAnteriorDeAcreedor().equals("") || sepaOperacion.getIdAnteriorDeAcreedor().equals(""))) {
+                mandateRelatedInformation.setAmdmntInfDtls(amendmentInformationDetails);
 
-            PartyIdentification32 partyIdentification = new PartyIdentification32();
-            partyIdentification.setNm(sepaOperacion.getNombreAnteriorDeAcreedor());
+                //
+                PartyIdentification32 partyIdentification = new PartyIdentification32();
+                if (!sepaOperacion.getNombreAnteriorDeAcreedor().equals("")) {
+                    partyIdentification.setNm(sepaOperacion.getNombreAnteriorDeAcreedor());
+                }
 
-            Party6Choice partyChoice = new Party6Choice();
-            PersonIdentification5 personIdentification = new PersonIdentification5();
 
-            GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
-            PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice = new PersonIdentificationSchemeName1Choice();
-            personIdentificationSchemeName1Choice.setPrtry("SEPA");
+                Party6Choice partyChoice = new Party6Choice();
+                PersonIdentification5 personIdentification = new PersonIdentification5();
 
-            genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
-            genericPersonIdentification1.setId(sepaOperacion.getIdAnteriorDeAcreedor());
+                GenericPersonIdentification1 genericPersonIdentification1 = new GenericPersonIdentification1();
+                PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice = new PersonIdentificationSchemeName1Choice();
+                personIdentificationSchemeName1Choice.setPrtry("SEPA");
 
-            personIdentification.getOthr().add(genericPersonIdentification1);
-            partyChoice.setPrvtId(personIdentification);
-            partyIdentification.setId(partyChoice);
+                genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
+                genericPersonIdentification1.setId(sepaOperacion.getIdAnteriorDeAcreedor());
 
-            amendmentInformationDetails.setOrgnlCdtrSchmeId(partyIdentification);
+                personIdentification.getOthr().add(genericPersonIdentification1);
+                partyChoice.setPrvtId(personIdentification);
+                partyIdentification.setId(partyChoice);
+
+                amendmentInformationDetails.setOrgnlCdtrSchmeId(partyIdentification);
+
+            }
 
 
             // Se se ha modificado la cuenta del deudor por otra en LA MISMA entidad
