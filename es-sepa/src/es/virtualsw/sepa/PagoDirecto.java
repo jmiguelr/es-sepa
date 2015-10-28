@@ -221,14 +221,14 @@ public class PagoDirecto {
 
             paymentInstructionInformation.getCdtTrfTxInf().add(creditTransferTransactionInformation10);
 
-            /*// Actualizamos los valores de numeros de transacciones e importe
+            // Actualizamos los valores de numeros de transacciones e importe
             dummyCounter = new Integer(paymentInstructionInformation.getNbOfTxs()).intValue();
             paymentInstructionInformation.setNbOfTxs("" + (++dummyCounter));
 
             importeAcumulado = paymentInstructionInformation.getCtrlSum();
-            importeAcumulado = importeAcumulado.add(directDebitTransactionInformation.getInstdAmt().getValue());
+            importeAcumulado = importeAcumulado.add(creditTransferTransactionInformation10.getAmt().getInstdAmt().getValue());
             importeAcumulado = importeAcumulado.setScale(2);
-            paymentInstructionInformation.setCtrlSum(importeAcumulado);*/
+            paymentInstructionInformation.setCtrlSum(importeAcumulado);
 
         }
 
