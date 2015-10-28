@@ -46,4 +46,6 @@ public interface SepaOperacion {
     String getIBANCuentaDeudor() ;
     String getConceptoDeOperacion() ;
 
+    String getNombreBeneficiario();
+    String getIBANBeneficiario();
 }

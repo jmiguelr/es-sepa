@@ -121,4 +121,11 @@ public class SepaOperacionTipoTest implements SepaOperacion {
         return "Concepto de Operacion";
     }
 
+    @Override
+    public String getNombreBeneficiario() {
+        return "Nombre Beneficiario";
+    }
+    public String getIBANBeneficiario() {
+        return "IBAN Beneficiario";
+    }
 }
