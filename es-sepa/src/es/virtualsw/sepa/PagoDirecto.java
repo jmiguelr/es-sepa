@@ -134,6 +134,10 @@ public class PagoDirecto {
         paymentInstructionInformation.setPmtInfId(sepaPago.getIdPago());
         //<PmtMtd>
         paymentInstructionInformation.setPmtMtd(PaymentMethod3Code.TRF);
+
+        paymentInstructionInformation.setNbOfTxs(new BigDecimal("0").toString());
+        paymentInstructionInformation.setCtrlSum(new BigDecimal("0"));
+
         //<ReqdExctnDt>
         paymentInstructionInformation.setReqdExctnDt(SepaUtils.ISODate(sepaPago.getFechaDeCobro()));
 
@@ -238,6 +242,8 @@ public class PagoDirecto {
 
     private CreditTransferTransactionInformation10 generaSepaOperacion(SepaFichero sepaFichero, SepaPago sepaPago, SepaOperacion sepaOperacion) {
         CreditTransferTransactionInformation10 creditTransferTransactionInformation10 = new CreditTransferTransactionInformation10();
+
+        PaymentInstructionInformation3 paymentInstructionInformation = new PaymentInstructionInformation3();
 
         //INDENTIFICCION DEL PAGO
         PaymentIdentification1 paymentIdentification1 = new PaymentIdentification1();
