@@ -61,15 +61,15 @@ public class PagoDirecto {
             document.getCstmrCdtTrfInitn().getPmtInf().add(paymentInstructionInformation);
 
             // Actualizamos contadores.
-           /* prevTxCount = Integer.parseInt(document.getCstmrCdtTrfInitn().getGrpHdr().getNbOfTxs());
+            prevTxCount = Integer.parseInt(document.getCstmrCdtTrfInitn().getGrpHdr().getNbOfTxs());
             dummyTxCounter = Integer.parseInt(paymentInstructionInformation.getNbOfTxs());
-            document.getCstmrCdtTrfInitn().getGrpHdr().setNbOfTxs(Integer.toString(prevTxCount + dummyTxCounter));*/
+            document.getCstmrCdtTrfInitn().getGrpHdr().setNbOfTxs(Integer.toString(prevTxCount + dummyTxCounter));
 
             // Actualizamos importe
-            /*importeAcumulado = document.getCstmrCdtTrfInitn().getGrpHdr().getCtrlSum();
+            importeAcumulado = document.getCstmrCdtTrfInitn().getGrpHdr().getCtrlSum();
             importeAcumulado = importeAcumulado.add(paymentInstructionInformation.getCtrlSum());
             importeAcumulado = importeAcumulado.setScale(2);
-            document.getCstmrCdtTrfInitn().getGrpHdr().setCtrlSum(importeAcumulado);*/
+            document.getCstmrCdtTrfInitn().getGrpHdr().setCtrlSum(importeAcumulado);
 
         }
     }
