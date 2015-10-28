@@ -265,13 +265,13 @@ public class PagoDirecto {
 
         //BENEFICIARIO
         PartyIdentification32 partyIdentification32 = new PartyIdentification32();
-        partyIdentification32.setNm(sepaOperacion.getNombreBeneficiario());
+        partyIdentification32.setNm(sepaOperacion.getNombreAnteriorDeAcreedor());
         creditTransferTransactionInformation10.setCdtr(partyIdentification32);
 
         //CUENTA DEL BENEFICIARIO
         CashAccount16 cashAccount16 = new CashAccount16();
         AccountIdentification4Choice accountIdentification4Choice = new AccountIdentification4Choice();
-        accountIdentification4Choice.setIBAN(sepaOperacion.getIBANBeneficiario());
+        accountIdentification4Choice.setIBAN(sepaOperacion.getIBANAnteriorDeDeudor());
         cashAccount16.setId(accountIdentification4Choice);
 
         creditTransferTransactionInformation10.setCdtrAcct(cashAccount16);
