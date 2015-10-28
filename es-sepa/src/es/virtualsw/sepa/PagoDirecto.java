@@ -147,7 +147,9 @@ public class PagoDirecto {
         //<Ctry>
         postalAddress.setCtry(sepaPago.getAcreedorPais());
         //<AdrLine>
-        postalAddress.getAdrLine().add(sepaPago.getAcreedorDireccion());
+        if(!"".equals(sepaPago.getAcreedorDireccion())) {
+            postalAddress.getAdrLine().add(sepaPago.getAcreedorDireccion());
+        }
         // CARGAMOS <PstlAdr>
         partyIdentification32.setPstlAdr(postalAddress);
 
