@@ -167,7 +167,7 @@ public class PagoDirecto {
 
             try {
                 //<Id>
-                genericOrganisationIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago.getAcreedorNIF(), sepaPago.getAcreedorSufijo(), DEFAULT_COUNTRY));
+                genericOrganisationIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago));
             } catch (InvalidDataException e) {
                 throw new StopProcessingException(e);
             }
@@ -182,7 +182,7 @@ public class PagoDirecto {
 
             try {
                 //<Id>
-                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago.getAcreedorNIF(), sepaPago.getAcreedorSufijo(), DEFAULT_COUNTRY));
+                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago));
             } catch (InvalidDataException e) {
                 throw new StopProcessingException(e);
             }

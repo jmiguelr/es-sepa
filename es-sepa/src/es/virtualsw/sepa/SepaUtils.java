@@ -2,6 +2,8 @@ package es.virtualsw.sepa;
 
 import es.virtualsw.sepa.data.SepaFichero;
 import es.virtualsw.sepa.data.SepaFicheroExtendido;
+import es.virtualsw.sepa.data.SepaPago;
+import es.virtualsw.sepa.data.SepaPagoExtendido;
 import es.virtualsw.sepa.exceptions.InvalidDataException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -192,6 +194,20 @@ public class SepaUtils {
             }
         } else {
             return identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), sepaFichero.getPresentadorPais());
+        }
+    }
+
+    public static String identificadorUnicoDeInterviniente(SepaPago sepaPago) throws InvalidDataException {
+        if (sepaPago instanceof SepaPagoExtendido) {
+            SepaPagoExtendido spe = (SepaPagoExtendido) sepaPago;
+            String idExt = spe.getIdentificadorExtendido();
+            if (idExt.equals("")){
+                return identificadorUnicoDeInterviniente(sepaPago.getAcreedorNIF(), sepaPago.getAcreedorSufijo(), sepaPago.getAcreedorPais());
+            } else {
+                return identificadorUnicoDeInterviniente(idExt);
+            }
+        } else {
+            return identificadorUnicoDeInterviniente(sepaPago.getAcreedorNIF(), sepaPago.getAcreedorSufijo(), sepaPago.getAcreedorPais());
         }
     }
 
