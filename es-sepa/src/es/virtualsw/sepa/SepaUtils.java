@@ -1,5 +1,7 @@
 package es.virtualsw.sepa;
 
+import es.virtualsw.sepa.data.SepaFichero;
+import es.virtualsw.sepa.data.SepaFicheroExtendido;
 import es.virtualsw.sepa.exceptions.InvalidDataException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -177,6 +179,31 @@ public class SepaUtils {
 
     public static String nibToIban(String nib) {
         return "PT50" + nib;
+    }
+
+    public static String identificadorUnicoDeInterviniente(SepaFichero sepaFichero) throws InvalidDataException {
+        if (sepaFichero instanceof SepaFicheroExtendido) {
+            SepaFicheroExtendido spe = (SepaFicheroExtendido) sepaFichero;
+            String idExt = spe.getIdentificadorExtendido();
+            if (idExt.equals("")){
+                return identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), sepaFichero.getPresentadorPais());
+            } else {
+                return identificadorUnicoDeInterviniente(idExt);
+            }
+        } else {
+            return identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), sepaFichero.getPresentadorPais());
+        }
+    }
+
+    public static String identificadorUnicoDeInterviniente(String identificador) throws InvalidDataException {
+        if (identificador.equals("")) {
+            throw new InvalidDataException("El IDENTIFICADOR no esta definido");
+        }
+        if (identificador.length() > 32) {
+            throw new InvalidDataException("El IDENTIFICADOR es mayor de 32 caracteres");
+        }
+
+        return identificador.toUpperCase();
     }
 
 
