@@ -1,6 +1,7 @@
 package src.es.virtualsw.sepa;
 
 import es.virtualsw.sepa.data.SepaPago;
+import es.virtualsw.sepa.data.SepaPagoExtendido;
 import iso.std.iso._20022.tech.xsd.pain_008_001_02.SequenceType1Code;
 
 import java.util.Date;
@@ -24,7 +25,7 @@ import java.util.Date;
  * <p/>
  * <p/>
  */
-public class SepaPagosTipoTest implements SepaPago {
+public class SepaPagosTipoTest extends SepaPagoExtendido {
     @Override
     public String getidFichero() {
         return "idFichero";
@@ -72,7 +73,7 @@ public class SepaPagosTipoTest implements SepaPago {
 
     @Override
     public String getAcreedorPais() {
-        return "Acreedor Pais";
+        return "ES";
     }
 
     @Override
@@ -88,5 +89,10 @@ public class SepaPagosTipoTest implements SepaPago {
     @Override
     public String getAcreedorBIC() {
         return "AcreedorBIC";
+    }
+
+    @Override
+    public String getIdentificadorExtendido() {
+        return "INDENTIFICADO_PAGO_EXT";
     }
 }

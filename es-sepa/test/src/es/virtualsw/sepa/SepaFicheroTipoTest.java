@@ -1,6 +1,7 @@
 package src.es.virtualsw.sepa;
 
 import es.virtualsw.sepa.data.SepaFichero;
+import es.virtualsw.sepa.data.SepaFicheroExtendido;
 
 import java.util.Date;
 
@@ -25,7 +26,8 @@ import java.util.Date;
  */
 
 
-public class SepaFicheroTipoTest implements SepaFichero {
+//public class SepaFicheroTipoTest implements SepaFichero {
+public class SepaFicheroTipoTest extends SepaFicheroExtendido {
     String id;
 
     public SepaFicheroTipoTest(String id) {
@@ -70,5 +72,10 @@ public class SepaFicheroTipoTest implements SepaFichero {
     @Override
     public String getPresentadorNombre() {
         return "Jose Miguel";
+    }
+
+    @Override
+    public String getIdentificadorExtendido() {
+        return "INDENTIFICADOR_EXT";
     }
 }

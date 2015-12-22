@@ -5,7 +5,7 @@ package es.virtualsw.sepa.data;
  */
 public abstract class SepaPagoExtendido implements SepaPago {
 
-    String identificadorExtendido;
+    String identificadorExtendido="";
 
     public String getIdentificadorExtendido() {
         return identificadorExtendido;
