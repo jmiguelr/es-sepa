@@ -47,6 +47,8 @@ public class AdeudoDirecto {
     private SepaPagoCreator sepaPagoCreator;
     private SepaOperacionCreator sepaOperacionCreator;
     private static final String DEFAULT_COUNTRY = "ES";
+    // CSIF-1919: Añadimos esta variable para poder comprobar que el contenido del fichero coincide con el de la remesa.
+    private BigDecimal sumaTotal;
 
 
     /**
@@ -103,6 +105,7 @@ public class AdeudoDirecto {
 
         }
 
+        sumaTotal = document.getCstmrDrctDbtInitn().getGrpHdr().getCtrlSum();
 
     }
 
@@ -440,6 +443,10 @@ public class AdeudoDirecto {
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         marshaller.marshal(new ObjectFactory().createDocument(document), new BufferedWriter(file));
         file.close();
+    }
+
+    public BigDecimal getSumaTotal() {
+        return sumaTotal;
     }
 
 }
