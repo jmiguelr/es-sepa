@@ -141,7 +141,7 @@ public class AdeudoDirecto {
             genericOrganisationIdentification1.setSchmeNm(organisationIdentificationSchemeName1Choice);
 
             try {
-                genericOrganisationIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), DEFAULT_COUNTRY));
+                genericOrganisationIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero));
             } catch (InvalidDataException e) {
                 throw new StopProcessingException(e);
             }
@@ -157,7 +157,7 @@ public class AdeudoDirecto {
 
             genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
             try {
-                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero.getPresentadorNIF(), sepaFichero.getPresentadorSufijo(), DEFAULT_COUNTRY));
+                genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaFichero));
             } catch (InvalidDataException e) {
                 throw new StopProcessingException(e);
             }
@@ -237,7 +237,7 @@ public class AdeudoDirecto {
 
 
         try {
-            genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago.getAcreedorNIF(), sepaPago.getAcreedorSufijo(), DEFAULT_COUNTRY));
+            genericPersonIdentification1.setId(SepaUtils.identificadorUnicoDeInterviniente(sepaPago));
         } catch (InvalidDataException e) {
             throw new StopProcessingException(e);
         }
