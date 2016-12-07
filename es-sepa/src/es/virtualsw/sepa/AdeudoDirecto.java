@@ -204,7 +204,9 @@ public class AdeudoDirecto {
         partyIdentification32.setNm(sepaPago.getAcreedorNombre());
         PostalAddress6 postalAddress = new PostalAddress6();
         postalAddress.setCtry(sepaPago.getAcreedorPais());
-        postalAddress.getAdrLine().add(sepaPago.getAcreedorDireccion());
+        if(!"".equals(sepaPago.getAcreedorDireccion())) {
+            postalAddress.getAdrLine().add(sepaPago.getAcreedorDireccion());
+        }
         partyIdentification32.setPstlAdr(postalAddress);
         paymentInstructionInformation.setCdtr(partyIdentification32);
 
